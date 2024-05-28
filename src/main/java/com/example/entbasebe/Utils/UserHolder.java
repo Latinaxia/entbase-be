@@ -3,7 +3,7 @@ package com.example.entbasebe.Utils;
 
 import com.example.entbasebe.DTO.UserDTO;
 /*
-获取当前用户信息的工具类
+获取当前用户信息的工具类,UserDTO是用户信息的DTO类
  */
 public class UserHolder {
     private static final ThreadLocal<UserDTO> tl = new ThreadLocal<>();
