@@ -1,0 +1,46 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/entbase-be?useSSL=false&serverTimezone=UTC
+    username: xxxx
+    password: xxxx
+
+  data:
+    redis:
+      host: xxx.xxx.xx.xxx
+      port: 6379
+      password: xxx
+
+  mail:
+    # SMTP服务器域名
+    host: smtp.qq.com
+    # 编码集
+    default-encoding: UTF-8
+    # 邮箱用户名
+    username: 3276327856@qq.com
+    # 授权码(注意不是邮箱密码！)
+#    password: snaquydrfzxudaea
+    password:
+    # 协议：smtps
+    properties:
+      mail:
+        smtp:
+          auth: true  # 必须进行授权认证，它的目的就是阻止他人任意乱发邮件
+          starttls: #SMTP加密方式:连接到一个TLS保护连接
+            enable: true
+            required: true
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+
+  jackson:
+    default-property-inclusion: non_null # JSON处理时忽略非空字段
+mybatis-plus:
+  type-aliases-package: com.hmdp.entity # 别名扫描包
+logging:
+  level:
+    com.hmdp: debug
