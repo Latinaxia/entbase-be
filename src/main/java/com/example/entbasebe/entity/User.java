@@ -29,17 +29,6 @@ public class User implements Serializable {
 
     String is_admin;
 
-
-
-
-
-
-
-
-
-
-
-
-
+    String icon;//用户头像
 
 }
