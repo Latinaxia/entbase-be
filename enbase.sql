@@ -11,8 +11,7 @@
  Target Server Version : 80026 (8.0.26)
  File Encoding         : 65001
 
- Date: 29/05/2024 19:51:54
- 在本地创建一个名为enbase数据库，然后导入sql文件即可
+ Date: 29/05/2024 20:36:42
 */
 
 SET NAMES utf8mb4;
@@ -25,7 +24,7 @@ DROP TABLE IF EXISTS `file`;
 CREATE TABLE `file`  (
   `file_id` int NOT NULL AUTO_INCREMENT,
   `file_path` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `folder_id` int NULL DEFAULT NULL,
+  `fold_id` int NULL DEFAULT NULL,
   `user_id` int NOT NULL,
   `file_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `creat_time` datetime NULL DEFAULT NULL,
@@ -57,6 +56,7 @@ CREATE TABLE `user`  (
   `user_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `user_password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `is_admin` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `user_email` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
