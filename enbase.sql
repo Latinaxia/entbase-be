@@ -12,6 +12,7 @@
  File Encoding         : 65001
 
  Date: 29/05/2024 19:51:54
+ 在本地创建一个名为enbase数据库，然后导入sql文件即可
 */
 
 SET NAMES utf8mb4;
