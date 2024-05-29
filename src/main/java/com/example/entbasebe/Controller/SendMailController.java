@@ -19,8 +19,9 @@ public class SendMailController {
     public Result SendMail(@RequestBody EM em){
         log.info("向邮箱{} 发送验证码",em.getTo());
 //        String Code= CodeTokenGenerator.generate();
-//        emailService.sendCode(em.getTo(),Code);
-//        log.info("验证码{}",Code);
+        String Code="123456";
+        emailService.sendCode(em.getTo(),Code);
+        log.info("验证码{}",Code);
         return Result.ok("验证码已发送！");
 
     }
