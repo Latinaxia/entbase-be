@@ -24,17 +24,17 @@ public class Folder implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "fold_id", type = IdType.AUTO)
-    Integer fold_id;
+    Integer FoldId;
 
-    String fold_name;
+    String FoldName;
 
-    String fold_path;
+    String FoldPath;
 
-    Integer father_id;//若文件夹有父文件夹，此既是父文件夹的fold_id
+    Integer FatherId;//若文件夹有父文件夹，此既是父文件夹的fold_id
 
-    Integer user_id;
+    Integer UserId;
 
-    LocalDateTime creat_time;
+    LocalDateTime CreatTime;
 
-    LocalDateTime update_time;
+    LocalDateTime UpdateTime;
 }

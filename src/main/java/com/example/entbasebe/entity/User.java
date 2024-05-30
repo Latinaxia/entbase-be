@@ -19,16 +19,16 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "user_id", type = IdType.AUTO)
-    Integer user_id;
+    Integer UserId;
 
-    String user_name;
+    String UserName;
 
-    String user_password;
+    String UserPassword;
 
-    String user_email;
+    String UserEmail;
 
-    String is_admin;
+    String IsAdmin;
 
-    String icon;//用户头像
+    String Icon;//用户头像
 
 }

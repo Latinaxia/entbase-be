@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 public class EmailServiceimpl implements EmailService {
     @Autowired
     private JavaMailSender mailSender;
-    private final String from="3276327856@qq.com";
+
     @Override
     public void sendCode(String to, String code) {
         SimpleMailMessage message = new SimpleMailMessage();
         System.out.println(message);
+        String from = "3276327856@qq.com";
         message.setFrom(from);
         message.setTo(to);
         message.setSubject("验证码");

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 public class UserDTO {
-    Integer user_id;
-    String user_name;
-    String icon;
+    Integer UserId;
+    String UserName;
+    String Icon;
 }

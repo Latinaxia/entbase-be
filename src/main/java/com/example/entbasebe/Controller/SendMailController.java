@@ -7,14 +7,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 @RestController
 @Slf4j
+@RequestMapping("/email")
 public class SendMailController {
-    @Autowired
+    @Resource
     private EmailService emailService;
 
+    /*
+    发送邮箱验证码
+     */
     @PostMapping ("/send")
     public Result SendMail(@RequestBody EM em){
         log.info("向邮箱{} 发送验证码",em.getTo());

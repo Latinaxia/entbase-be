@@ -24,17 +24,17 @@ public class File implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "file_id", type = IdType.AUTO)
-    Integer file_id;
+    Integer FileId;
 
-    String file_name;
+    String FileName;
 
-    String file_path;
+    String FilePath;
 
-    Integer fold_id;
+    Integer FoldId;
 
-    Integer user_id;
+    Integer UserId;
 
-    LocalDateTime creat_time;
+    LocalDateTime CreatTime;
 
-    LocalDateTime update_time;
+    LocalDateTime UpdateTime;
 }

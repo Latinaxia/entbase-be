@@ -27,7 +27,7 @@ spring:
     #
     username: 3276327856@qq.com
     #
-    password: snaquydrfzxudaea
+    password: snaquydrfzxudaeaxxx
     #
     properties:
       mail:
@@ -37,6 +37,6 @@ spring:
             enable: true
             required: true
 
-mybatis:
+mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
