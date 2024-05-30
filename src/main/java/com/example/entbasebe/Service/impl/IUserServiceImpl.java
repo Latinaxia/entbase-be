@@ -1,6 +1,7 @@
 package com.example.entbasebe.Service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.entbasebe.DTO.LoginDTO;
 import com.example.entbasebe.DTO.UserDTO;
@@ -21,6 +22,8 @@ import javax.servlet.http.HttpSession;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.example.entbasebe.Utils.SystemConstants.USER_NICK_NAME_PREFIX;
 
 @Slf4j
 @Service
@@ -64,22 +67,87 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         UserHolder.saveUser(userDTO);
 
         //自定义Map,将所有字段的值都转为String,为jwt令牌生成做准备
-        Map<String, Object> userMap = BeanUtil.beanToMap(user, new HashMap<>(),
+        Map<String, Object> userMap = BeanUtil.beanToMap(userDTO, new HashMap<>(),
                 CopyOptions.create()
                         .setIgnoreNullValue(true)
                         .setFieldValueEditor((fieldName,fieldValue) -> fieldValue.toString()));
 
         //使用jwt和user中的所以信息生成token
-        String token = JwtUtils.generateJwt(userMap);
+        String token = JwtUtils.generateJwt(userMap,user.getUserId());
 
         //返回token
         return Result.ok(token);
-        // 已弃用
-        // 保存用户信息到redis中,并在redis中设置有效期,一个userMap（用户）对应一个token
-//        String tokenKey = LOGIN_USER_KEY + token;
-//        stringRedisTemplate.opsForHash().putAll(tokenKey,userMap);
-//        stringRedisTemplate.expire(tokenKey,LOGIN_USER_TTL, TimeUnit.MINUTES);//有效期
-
-
     }
+
+    @Override
+    public Result register(LoginDTO loginDTO) {
+        //校验邮箱
+        String email = loginDTO.getEmail();
+        if(RegexUtils.isEmailInvalid(email)){
+            return Result.fail("邮箱格式不正确!");
+        }
+
+        //校验密码
+        String password = loginDTO.getPassword();
+        if(password == null || password.isEmpty()){
+            return Result.fail("密码不能为空!");
+        }
+
+        //校验验证码
+        String code = loginDTO.getCode();
+        if(code == null || code.isEmpty()){
+            return Result.fail("验证码不能为空!");
+        }
+        //从redis中获取验证码，与用户输入的验证码进行比对
+        String redisCode = stringRedisTemplate.opsForValue().get(email);
+        if(redisCode == null || !redisCode.equals(code)){
+            return Result.fail("验证码错误!");
+        }
+
+        //判断用户是否存在
+        User user = query().eq("user_email",email).one();
+        if(user != null){
+            return Result.fail("用户已存在!");
+        }
+
+        //验证码正确，邮箱密码符合规范，则注册用户
+        User newUser = new User();
+        newUser.setUserEmail(email);
+        newUser.setUserPassword(loginDTO.getPassword());
+        //用户名随机生成
+        newUser.setUserName(USER_NICK_NAME_PREFIX + RandomUtil.randomString(6));
+        //头像暂时默认
+        newUser.setIcon("默认头像");
+        //注册用户不为管理员，isadmin设为0
+        newUser.setIsAdmin("0");
+        //先存入数据库中，为该用户生自动生成UserId
+        save(newUser);
+
+        //将该用户再次取出，为其生成token
+        User FinalUser = query().eq("user_email",email).one();
+
+        //将用户信息存入UserHolder
+        UserDTO userDTO = BeanUtil.copyProperties(FinalUser, UserDTO.class);
+        log.info("DTO{}",userDTO);
+        UserHolder.saveUser(userDTO);
+
+        //自定义Map,将所有字段的值都转为String,为jwt令牌生成做准备
+        Map<String, Object> userMap = BeanUtil.beanToMap(newUser, new HashMap<>(),
+                CopyOptions.create()
+                        .setIgnoreNullValue(true)
+                        .setFieldValueEditor((fieldName,fieldValue) -> fieldValue.toString()));
+
+        //使用jwt和user中的所以信息生成token
+        String token = JwtUtils.generateJwt(userMap,FinalUser.getUserId());
+
+        //返回token
+        return Result.ok(token);
+    }
+
+    @Override
+    public void saveCodeId(String code) {
+        //存入redis中，用于校验验证码,有效期10分钟
+        stringRedisTemplate.opsForValue().set("CodeId",code,10*60);
+    }
+
 }

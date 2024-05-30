@@ -16,4 +16,6 @@ public class SystemConstants {
      */
     public static final String LOGIN_USER_KEY = "login:token:";
     public static final Long LOGIN_USER_TTL = 36000L;
+
+    public static final String USER_NICK_NAME_PREFIX = "entbaser_";
 }

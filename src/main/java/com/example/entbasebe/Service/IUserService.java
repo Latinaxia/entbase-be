@@ -7,4 +7,8 @@ import javax.servlet.http.HttpSession;
 
 public interface IUserService {
     Result login(LoginDTO loginDTO, HttpSession session);
+
+    Result register(LoginDTO loginDTO);
+
+    void saveCodeId(String code);
 }
