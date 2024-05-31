@@ -18,4 +18,7 @@ public class SystemConstants {
     public static final Long LOGIN_USER_TTL = 36000L;
 
     public static final String USER_NICK_NAME_PREFIX = "entbaser_";
+
+    //发送邮箱的邮箱地址，各位请自行修改
+    public static final String EMAIL_FROM = "3276327856@qq.com";
 }

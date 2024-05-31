@@ -11,4 +11,6 @@ public interface IUserService {
     Result register(LoginDTO loginDTO);
 
     void saveCodeId(String code);
+
+    Result sendmail(LoginDTO loginDTO);
 }

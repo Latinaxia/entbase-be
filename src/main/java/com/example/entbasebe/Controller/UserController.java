@@ -44,14 +44,14 @@ public class UserController {
         userService.saveCodeId(code);
 
         //将验证码ID和图片的base64返回到前端
-        ImageCode imageCode = new ImageCode("CodeId",lineCaptcha.getImageBase64());
+        ImageCode imageCode = new ImageCode("codeId",lineCaptcha.getImageBase64());
         return Result.ok(imageCode);
     }
 
-//    @PostMapping("/sendmail")
-//    public Result sendmail(@RequestBody LoginDTO loginDTO) {
-//        log.info("loginDTO: {}", loginDTO);
-//        return userService.sendmail(loginDTO);
-//    }
+    @PostMapping("/get-email-code")
+    public Result sendmail(@RequestBody LoginDTO loginDTO) {
+        log.info("loginDTO: {}", loginDTO);
+        return userService.sendmail(loginDTO);
+    }
 
 }

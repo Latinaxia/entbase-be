@@ -14,6 +14,8 @@ import com.example.entbasebe.entity.User;
 import com.example.entbasebe.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 
@@ -22,7 +24,9 @@ import javax.servlet.http.HttpSession;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import static com.example.entbasebe.Utils.SystemConstants.EMAIL_FROM;
 import static com.example.entbasebe.Utils.SystemConstants.USER_NICK_NAME_PREFIX;
 
 @Slf4j
@@ -34,6 +38,9 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private JavaMailSender mailSender;
 
     @Override
     public Result login(LoginDTO loginDTO, HttpSession session) {
@@ -147,7 +154,53 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
     @Override
     public void saveCodeId(String code) {
         //存入redis中，用于校验验证码,有效期10分钟
-        stringRedisTemplate.opsForValue().set("CodeId",code,10*60);
+        //这里必须用set("codeId",code,10*60, TimeUnit.SECONDS)这个方法，新的code才会完全覆盖原code，避免乱码现象
+        stringRedisTemplate.opsForValue().set("codeId",code,10*60, TimeUnit.SECONDS);
+        stringRedisTemplate.expire("codeId", 10, TimeUnit.MINUTES);
+    }
+
+    @Override
+    public Result sendmail(LoginDTO loginDTO) {
+
+        //校验邮箱
+        String email = loginDTO.getEmail();
+        if(RegexUtils.isEmailInvalid(email)){
+            return Result.fail("邮箱格式不正确!");
+        }
+
+        //根据前端传来的验证码ID在redis中找到验证码
+        //将redis中的验证码与前端传来的验证码比对，一致则发送邮箱验证码
+        String imageCode = loginDTO.getImageCode();
+        String imageCodeId = loginDTO.getImageCodeId();
+        String redisCode = stringRedisTemplate.opsForValue().get(imageCodeId);
+        if(redisCode == null || !redisCode.equals(imageCode)){
+            return Result.fail("验证码错误!");
+        }
+        //验证码正确，发送邮箱验证码
+        //生成邮箱验证码
+        String code = RandomUtil.randomNumbers(6);
+        //存入redis中，用于校验验证码,有效期10分钟
+        stringRedisTemplate.opsForValue().set(email,code,10*60, TimeUnit.SECONDS);
+        stringRedisTemplate.expire(email, 10, TimeUnit.MINUTES);
+        //发送邮件
+        SendMailCode(email,code);
+        //返回结果
+        return Result.ok("验证码已发送至邮箱！请注意查收");
+    }
+
+    private void SendMailCode(String email, String code) {
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        message.setFrom(EMAIL_FROM);
+
+        message.setTo(email);
+
+        message.setSubject("欢迎使用entbase存储服务!");
+
+        message.setText("您本次请求的邮件验证码为:" + code + ",本验证码 10 分钟内效，请及时输入。（请勿泄露此验证码）\n"
+                + "\n如非本人操作，请忽略该邮件。\n(这是一封通过自动发送的邮件，请不要直接回复）");
+
+        mailSender.send(message);
     }
 
 }
