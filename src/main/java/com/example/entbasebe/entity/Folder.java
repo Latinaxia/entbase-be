@@ -37,4 +37,6 @@ public class Folder implements Serializable {
     LocalDateTime CreatTime;
 
     LocalDateTime UpdateTime;
+
+    Integer isBucket;
 }

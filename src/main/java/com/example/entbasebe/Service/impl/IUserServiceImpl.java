@@ -10,18 +10,25 @@ import com.example.entbasebe.Utils.JwtUtils;
 import com.example.entbasebe.Utils.RegexUtils;
 import com.example.entbasebe.Utils.Result;
 import com.example.entbasebe.Utils.UserHolder;
+import com.example.entbasebe.entity.Bucket;
+import com.example.entbasebe.entity.Folder;
 import com.example.entbasebe.entity.User;
+import com.example.entbasebe.mapper.BucketMapper;
+import com.example.entbasebe.mapper.FolderMapper;
 import com.example.entbasebe.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import java.io.File;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +45,12 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private FolderMapper folderMapper;
+
+    @Resource
+    private BucketMapper bucketMapper;
 
     @Resource
     private JavaMailSender mailSender;
@@ -130,11 +143,36 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         //先存入数据库中，为该用户生自动生成UserId
         save(newUser);
 
+
         //将该用户再次取出，为其生成token
-        User FinalUser = query().eq("user_email",email).one();
+        User finalUser = query().eq("user_email",email).one();
+
+        //为该用户创建一个文件夹用于存储该用户的所有文件
+        String folderPath = "C:\\entbase\\" + email;
+        File directory = new File(folderPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+            log.info("Folder created successfully.");
+        }
+
+        //将该文件夹信息存入数据库，再取出即可获得folderId
+        Folder folder = new Folder();
+        folder.setFoldName(email);
+        folder.setFoldPath(folderPath);
+        folder.setUserId(finalUser.getUserId());
+        folder.setIsBucket(1);
+        folderMapper.save(folder);
+
+        //将用户的bucket构建并存入数据库
+        Folder finalFolder = folderMapper.getFoldByName(email);
+        Bucket bucket = new Bucket();
+        bucket.setUserId(finalUser.getUserId());
+        bucket.setBucketId(finalFolder.getFoldId());
+        bucketMapper.save(bucket);
+
 
         //将用户信息存入UserHolder
-        UserDTO userDTO = BeanUtil.copyProperties(FinalUser, UserDTO.class);
+        UserDTO userDTO = BeanUtil.copyProperties(finalUser, UserDTO.class);
         log.info("DTO{}",userDTO);
         UserHolder.saveUser(userDTO);
 
@@ -145,7 +183,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
                         .setFieldValueEditor((fieldName,fieldValue) -> fieldValue.toString()));
 
         //使用jwt和user中的所以信息生成token
-        String token = JwtUtils.generateJwt(userMap,FinalUser.getUserId());
+        String token = JwtUtils.generateJwt(userMap,finalUser.getUserId());
 
         //返回token
         return Result.ok(token);
