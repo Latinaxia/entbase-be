@@ -172,9 +172,9 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
 
 
         //将用户信息存入UserHolder
-        UserDTO userDTO = BeanUtil.copyProperties(finalUser, UserDTO.class);
-        log.info("DTO{}",userDTO);
-        UserHolder.saveUser(userDTO);
+//        UserDTO userDTO = BeanUtil.copyProperties(finalUser, UserDTO.class);
+//        log.info("DTO{}",userDTO);
+//        UserHolder.saveUser(userDTO);
 
         //自定义Map,将所有字段的值都转为String,为jwt令牌生成做准备
         Map<String, Object> userMap = BeanUtil.beanToMap(newUser, new HashMap<>(),

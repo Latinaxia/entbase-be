@@ -2,13 +2,13 @@ package com.example.entbasebe.Controller;
 
 import com.example.entbasebe.Service.IAdminService;
 import com.example.entbasebe.Utils.Result;
+import io.lettuce.core.dynamic.annotation.Param;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.ibatis.plugin.Interceptor;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 
 @RestController
 @Slf4j
@@ -19,8 +19,16 @@ public class AdminController {
     private IAdminService adminService;
 
     @DeleteMapping("/delete-user")
-    public Result deleteUserById(Integer userId){
+    public Result deleteUserById(@Param("userId") Integer userId){
         log.info("Delete user by id: " + userId);
         return adminService.deleteUserById(userId);
     }
+
+    @PostMapping("/new-bucket")
+    public Result createPublicBucket(@RequestParam("bucketName") String bucketName){
+        log.info("Create new Public bucket: " + bucketName);
+        return adminService.createPublicBucket(bucketName);
+    }
+
+
 }

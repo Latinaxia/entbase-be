@@ -188,6 +188,7 @@
 
             <!--白盒测试工具 jacoco插件-->
 
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -208,6 +209,21 @@
                         <id>default-report</id>
                         <goals>
                             <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+<!--            打包jar-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.7</version> <!-- 替换成您正在使用的Spring Boot版本 -->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
                         </goals>
                     </execution>
                 </executions>
