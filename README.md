@@ -22,3 +22,4 @@
     最后把目前的进度打包了个jar包在target文件里，大家有兴趣可以测试下
 
 6.2 添加 Dockerfile 与 Docker Compose 文件,数据库名改为entbase（之前叫enbase），添加了SSH密钥用于持续部署
+    添加了CorsConfig用于允许跨域请求，修改了data的存储路径为相对路径
