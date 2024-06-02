@@ -64,7 +64,7 @@ public class IAdminServiceImpl implements IAdminService {
     @Override
     public Result createPublicBucket(String bucketName) {
         //1.创建bucket文件夹
-        String bucketPath = "C:\\entbase\\" + bucketName;
+        String bucketPath = "./data/" + bucketName;
         File bucketFolder = new File(bucketPath);
         if (!bucketFolder.exists()) {
             bucketFolder.mkdirs();

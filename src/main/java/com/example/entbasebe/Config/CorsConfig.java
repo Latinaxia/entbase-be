@@ -20,7 +20,6 @@ public class CorsConfig {
                         .allowedMethods("*") // 允许任何方法（post、get等）
                         .allowedHeaders("*") // 允许任何请求头
                         .allowCredentials(false) // 允许证书、cookie
-                        .allowedOrigins("43.134.163.165:18080")
                         .exposedHeaders(HttpHeaders.SET_COOKIE)
                         .maxAge(3600L); // maxAge(3600)表明在3600秒内，不需要再发送预检验请求，可以缓存该结果
             }

@@ -148,7 +148,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         User finalUser = query().eq("user_email",email).one();
 
         //为该用户创建一个文件夹用于存储该用户的所有文件
-        String folderPath = "C:\\entbase\\" + email;
+        String folderPath = "./data/" + email;
         File directory = new File(folderPath);
         if (!directory.exists()) {
             directory.mkdirs();
