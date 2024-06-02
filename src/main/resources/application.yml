@@ -5,7 +5,7 @@ spring:
     name: entbase
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/enbase?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://127.0.0.1:3306/entbase?useSSL=false&serverTimezone=UTC
     username: root
     password: 6327zxt523
   redis:

@@ -1,0 +1,40 @@
+services:
+  app:
+    build: .
+    command:
+      - --spring.datasource.url=jdbc:mysql://mysql:3306/entbase?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      - --spring.datasource.password=MUau8bqoRQqh69eFYKeikWJCQy4Y9fNL
+      - --spring.redis.host=redis
+      - --spring.redis.password=
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - 18080:8080 # DEBUG ONLY!
+    volumes:
+      - ./data:/app/data
+    labels:
+      - traefik.enable=false
+
+  mysql:
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=MUau8bqoRQqh69eFYKeikWJCQy4Y9fNL
+      - MYSQL_DATABASE=entbase
+      - MYSQL_ROOT_HOST=% # DEBUG ONLY!
+    ports:
+      - 17532:3306 # DEBUG ONLY!
+
+    volumes:
+      - ./entbase.sql:/docker-entrypoint-initdb.d/entbase.sql
+      - mysql-data:/var/lib/mysql
+    labels:
+      - traefik.enable=false
+
+  redis:
+    image: redis:7
+    labels:
+      - traefik.enable=false
+
+volumes:
+  mysql-data:
