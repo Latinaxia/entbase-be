@@ -23,3 +23,9 @@
 
 6.2 添加 Dockerfile 与 Docker Compose 文件,数据库名改为entbase（之前叫enbase），添加了SSH密钥用于持续部署
     添加了CorsConfig用于允许跨域请求，修改了data的存储路径为相对路径
+
+6.3 写了管理员修改和删除共享桶操作，没来得及测试
+
+6.4 测试了昨天写的接口，发现在修改bucket名称后bucket_path没修改，解决了该bug  
+    突然想起来没有配置redis的连接工厂和序列化方式，加上了
+    
