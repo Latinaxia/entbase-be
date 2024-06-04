@@ -7,4 +7,8 @@ public interface IAdminService {
 
 
     Result createPublicBucket(String bucketName);
+
+    Result editBucket(String bucketName, Integer bucketId);
+
+    Result deleteBucket(Integer bucketId);
 }

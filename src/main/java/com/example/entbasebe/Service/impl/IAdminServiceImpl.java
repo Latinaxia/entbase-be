@@ -92,6 +92,49 @@ public class IAdminServiceImpl implements IAdminService {
         return Result.ok("创建共享bucket成功！");
     }
 
+    @Override
+    public Result editBucket(String bucketName, Integer bucketId) {
+        //将folder表中的名字改掉
+        folderMapper.updateFolderName(bucketName, bucketId);
+
+        //将文件夹中folder名字改掉
+        //获取原本的bucket路径
+        String BucketPath = folderMapper.getFolderPathById(bucketId);
+        File folder = new File(BucketPath);
+        if (folder.exists()) {
+            File newFolder = new File(folder.getParent(), bucketName);
+            if (folder.renameTo(newFolder)) {
+                System.out.println("文件夹名称修改成功");
+            }
+        }
+        String newBucketPath = folder.getParent() + "/" + bucketName;
+        log.info("新的bucket路径：{}", newBucketPath);
+
+        //更新bucket表中的路径
+        folderMapper.updateFolderPath(newBucketPath, bucketId);
+
+        return Result.ok("修改成功！");
+    }
+
+    @Override
+    public Result deleteBucket(Integer bucketId) {
+        //根据bucketId获取bucket路径
+        String bucketPath = bucketMapper.getBucketPathById(bucketId);
+        log.info("待删除的bucket文件夹路径：{}", bucketPath);
+        try {
+            //递归删除整个文件夹
+            deleteAllFileAndFolder(new File(bucketPath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        //在数据库中删除bucket信息
+        bucketMapper.deleteBucketById(bucketId);
+        folderMapper.deleteFolderById(bucketId);
+
+        return Result.ok("删除成功！");
+    }
+
     public void deleteAllFileAndFolder(File file) throws IOException {
         // 如果是文件夹，则递归删除其内部的所有文件和子文件夹
         if(file.isDirectory()){
@@ -102,7 +145,7 @@ public class IAdminServiceImpl implements IAdminService {
         // 如果是文件，则直接尝试删除，并检查返回值
         if (!file.delete()) {
             // 使用日志记录器
-            log.error("Failed to delete file: {}", file.getAbsolutePath());
+//            log.error("Failed to delete file: {}", file.getAbsolutePath());
             // 文件删除失败时可以抛出异常或记录错误信息
             throw new IOException("Failed to delete file: " + file.getAbsolutePath());
         }

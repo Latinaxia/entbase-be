@@ -30,5 +30,15 @@ public class AdminController {
         return adminService.createPublicBucket(bucketName);
     }
 
+    @PostMapping("/edit-bucket")
+    public Result editBucket(@RequestParam("bucketName") String bucketName, @RequestParam("bucketId") Integer bucketId){
+        log.info("Edit bucket: " + bucketId + " to new Name: " + bucketName);
+        return adminService.editBucket(bucketName, bucketId);
+    }
 
+    @PostMapping("delete-bucket")
+    public Result deleteBucket(@RequestParam("bucketId") Integer bucketId) {
+        log.info("Delete bucket: " + bucketId);
+        return adminService.deleteBucket(bucketId);
+    }
 }

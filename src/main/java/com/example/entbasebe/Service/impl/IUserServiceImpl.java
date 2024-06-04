@@ -81,10 +81,16 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
             return Result.fail("密码错误!");
         }
 
-        //将用户信息存入UserHolder
+        String imageCode = loginDTO.getImageCode();
+        String imageCodeId = loginDTO.getImageCodeId();
+        String redisCode = stringRedisTemplate.opsForValue().get(imageCodeId);
+        if(redisCode == null || !redisCode.equals(imageCode)){
+            return Result.fail("验证码错误!");
+        }
+
         UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
         log.info("DTO{}",userDTO);
-        UserHolder.saveUser(userDTO);
+//        UserHolder.saveUser(userDTO);
 
         //自定义Map,将所有字段的值都转为String,为jwt令牌生成做准备
         Map<String, Object> userMap = BeanUtil.beanToMap(userDTO, new HashMap<>(),
@@ -194,7 +200,8 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         //存入redis中，用于校验验证码,有效期10分钟
         //这里必须用set("codeId",code,10*60, TimeUnit.SECONDS)这个方法，新的code才会完全覆盖原code，避免乱码现象
         stringRedisTemplate.opsForValue().set("codeId",code,10*60, TimeUnit.SECONDS);
-        stringRedisTemplate.expire("codeId", 10, TimeUnit.MINUTES);
+        //添加redisConfig后，解决了乱码问题
+//        stringRedisTemplate.expire("codeId", 10, TimeUnit.MINUTES);
     }
 
     @Override
