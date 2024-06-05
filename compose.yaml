@@ -13,6 +13,7 @@ services:
       - 18080:8080 # DEBUG ONLY!
     volumes:
       - ./data:/app/data
+    restart: always
     labels:
       - traefik.enable=false
 
@@ -24,15 +25,16 @@ services:
       - MYSQL_ROOT_HOST=% # DEBUG ONLY!
     ports:
       - 17532:3306 # DEBUG ONLY!
-
     volumes:
       - ./entbase.sql:/docker-entrypoint-initdb.d/entbase.sql
       - mysql-data:/var/lib/mysql
+    restart: always
     labels:
       - traefik.enable=false
 
   redis:
     image: redis:7
+    restart: always
     labels:
       - traefik.enable=false
 
