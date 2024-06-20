@@ -11,4 +11,6 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select * from user where user_email = #{email}")
     User QueryByEmail(String email);
 
+    @Select("select user_id from user where user_email = #{userEmail}")
+    Integer getUserIdByEmail(String userEmail);
 }

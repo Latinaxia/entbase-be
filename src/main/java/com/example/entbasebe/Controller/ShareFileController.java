@@ -28,4 +28,9 @@ public class ShareFileController {
         log.info("getShareFile shareId:{},pwd:{}",shareId,pwd);
         return shareFileService.getShareFile(shareId,pwd);
     }
+
+    @PostMapping("/list")
+    public Result listShareFile(){
+        return shareFileService.listShareFile();
+    }
 }

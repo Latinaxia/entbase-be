@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
 public class UserDTO {
 //    Integer UserId;
     String UserName;
