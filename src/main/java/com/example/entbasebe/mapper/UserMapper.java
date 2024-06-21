@@ -32,4 +32,7 @@ public interface UserMapper extends BaseMapper<User> {
             "from folder f join bucket b on f.user_id = b.user_id " +
             "where fold_id = #{bucketId} limit 1")
     BucketsDTO getBucket(Integer bucketId);
+
+    @Select("select * from user where user_id=#{userId}")
+    User getUserById(Integer userId);
 }

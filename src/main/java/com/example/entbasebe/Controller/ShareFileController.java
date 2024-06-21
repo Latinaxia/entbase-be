@@ -33,4 +33,26 @@ public class ShareFileController {
     public Result listShareFile(){
         return shareFileService.listShareFile();
     }
+
+
+    /**
+     * 删除共享
+     * @param shareId
+     * @return
+     */
+    @PostMapping("/delete/{shareId}")
+    public Result deleteById(@PathVariable("shareId") String shareId){
+        return shareFileService.deleteById(shareId);
+    }
+
+
+    /**
+     * 获取共享信息--返回文件名
+     * @param shareId
+     * @return
+     */
+    @PostMapping("/get-info/{shareId}")
+    public Result getSharePathById(@PathVariable("shareId") String shareId){
+        return shareFileService.getSharePathById(shareId);
+    }
 }
