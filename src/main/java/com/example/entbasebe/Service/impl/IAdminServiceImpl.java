@@ -1,5 +1,7 @@
 package com.example.entbasebe.Service.impl;
 
+import com.example.entbasebe.DTO.UserDTO;
+import com.example.entbasebe.DTO.UsersListDTO;
 import com.example.entbasebe.Service.IAdminService;
 import com.example.entbasebe.Utils.Result;
 import com.example.entbasebe.entity.Bucket;
@@ -61,6 +63,7 @@ public class IAdminServiceImpl implements IAdminService {
         return Result.ok("已删除该用户的所有信息！");
     }
 
+    @Transactional
     @Override
     public Result createPublicBucket(String bucketName) {
         //1.创建bucket文件夹
@@ -87,7 +90,10 @@ public class IAdminServiceImpl implements IAdminService {
         bucket.setUserId(8);
         bucket.setBucketId(finalFolder.getFoldId());
         bucket.setIsPublic("1");//设置为共享bucket
-        bucketMapper.save(bucket);
+        bucket.setBucketSpace(2048);
+        log.info("创建了一个共享bucket：{}",bucket);
+
+        bucketMapper.saveBucket(bucket);
 
         return Result.ok("创建共享bucket成功！");
     }
@@ -133,6 +139,12 @@ public class IAdminServiceImpl implements IAdminService {
         folderMapper.deleteFolderById(bucketId);
 
         return Result.ok("删除成功！");
+    }
+
+    @Override
+    public Result listUsers() {
+        List<UsersListDTO> users = adminMapper.listUsers();
+        return Result.ok(users);
     }
 
     public void deleteAllFileAndFolder(File file) throws IOException {

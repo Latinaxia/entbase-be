@@ -14,4 +14,7 @@ public interface BucketMapper {
 
     @Delete("delete from bucket where bucket_id = #{bucketId}")
     void deleteBucketById(Integer bucketId);
+
+    @Insert("insert into bucket (bucket_id,user_id,bucket_space,is_public) values (#{bucketId}, #{userId}, #{bucketSpace},#{isPublic})")
+    void saveBucket(Bucket bucket);
 }

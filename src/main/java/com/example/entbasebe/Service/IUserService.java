@@ -13,4 +13,7 @@ public interface IUserService {
     void saveCodeId(String code);
 
     Result sendmail(LoginDTO loginDTO);
+
+
+    Result listBuckets();
 }

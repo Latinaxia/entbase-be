@@ -28,11 +28,14 @@ public class Bucket implements Serializable {
     @TableId(value = "bucket_id")
     private Integer bucketId;
 
+    @TableId(value = "user_id")
     private Integer userId;
 
+    @TableId(value = "bucket_space")
     private Integer bucketSpace;
 
     //用于判断这个库是否是公共库，默认为false
+    @TableId(value = "is_public")
     private String isPublic;
 
 }
