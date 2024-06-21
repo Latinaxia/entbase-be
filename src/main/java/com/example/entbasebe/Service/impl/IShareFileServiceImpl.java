@@ -1,16 +1,18 @@
 package com.example.entbasebe.Service.impl;
 
+import com.example.entbasebe.DTO.ShareDTO;
 import com.example.entbasebe.DTO.ShareFileDTO;
 import com.example.entbasebe.DTO.UserDTO;
-import com.example.entbasebe.DTO.UserHolderDTO;
 import com.example.entbasebe.Service.IShareFileService;
 import com.example.entbasebe.Utils.Result;
 import com.example.entbasebe.Utils.UserHolder;
 import com.example.entbasebe.entity.User;
 import com.example.entbasebe.mapper.ShareFileMapper;
 import com.example.entbasebe.mapper.UserMapper;
+import com.example.entbasebe.vo.vo.ShareFileVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.plugin.Interceptor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +45,7 @@ public class IShareFileServiceImpl implements IShareFileService {
     @Override
     public Result creatShareFile(Integer bucketId, String password, String filePath) {
 
-//        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
+        UserHolder.saveUser(new UserDTO("entbaser_g8b0fc","默认头像","2914421833@qq.com","0"));
         //为要共享的文件生成一个唯一的共享ID，并将该ID，文件路径和密码存入数据库，设置有效期12h
         Path path = Paths.get(filePath);
         String uniqueStringId = UUID.nameUUIDFromBytes(path.toString().getBytes()).toString().substring(0, 6);
@@ -88,7 +90,7 @@ public class IShareFileServiceImpl implements IShareFileService {
 
     @Override
     public Result listShareFile() {
-//        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
+        UserHolder.saveUser(new UserDTO("entbaser_g8b0fc","默认头像","2914421833@qq.com","0"));
         //获取当前用户的id
         String userEmail = UserHolder.getUser().getUserEmail();
         Integer userId = userMapperl.getUserIdByEmail(userEmail);
@@ -108,6 +110,60 @@ public class IShareFileServiceImpl implements IShareFileService {
 
         //返回文件名，分享时间，截止日期
         return Result.ok(shareFileDTOS);
+    }
+
+    /**
+     * 删除共享
+     * @param shareId
+     * @return
+     */
+    @Override
+    public Result deleteById(String shareId) {
+        //这里获取用户信息,只能有创建共享者删除
+        UserHolder.saveUser(new UserDTO("entbaser_g8b0fc","默认头像","2914421833@qq.com","0"));
+
+        //获取用户id
+        String userEmail = UserHolder.getUser().getUserEmail();
+        Integer userId = userMapperl.getUserIdByEmail(userEmail);
+
+        //删除共享
+        shareFileMapper.deleteById(shareId,userId);
+
+        return Result.ok();
+    }
+
+    /**
+     * 获取共享信息
+     * @param shareId
+     * @return
+     */
+    @Override
+    public Result getSharePathById(String shareId) {
+
+        // 获取共享文件的路径、创建人ID和结束时间
+        ShareDTO shareFile = shareFileMapper.getShareFileById(shareId);
+        if (shareFile == null) {
+            return Result.fail("共享文件不存在");
+        }
+
+        // 获取创建人信息
+        User user = userMapperl.getUserById(shareFile.getUserId());
+        if (user == null) {
+            return Result.fail("创建人不存在");
+        }
+
+        // 获取文件名
+        String fileName = shareFileMapper.getFileName(shareFile.getFilePath());
+
+        ShareFileVo shareFileVo = new ShareFileVo();
+        BeanUtils.copyProperties(shareFile,shareFileVo);
+
+        // 设置文件名、创建人和结束时间
+        shareFileVo.setFileName(fileName);
+        shareFileVo.setUserName(user.getUserName());
+        shareFileVo.setEndTime(shareFile.getEndTime());
+
+        return Result.ok(shareFileVo);
     }
 
 }

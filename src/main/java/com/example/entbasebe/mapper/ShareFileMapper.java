@@ -1,6 +1,8 @@
 package com.example.entbasebe.mapper;
 
+import com.example.entbasebe.DTO.ShareDTO;
 import com.example.entbasebe.DTO.ShareFileDTO;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -26,4 +28,20 @@ public interface ShareFileMapper {
 
     @Select("select file_name from file where file_path = #{filePath}")
     String getFileName(String filePath);
+
+    /**
+     * 删除共享
+     * @param shareId
+     * @param userId
+     */
+    @Delete("delete from share where share_id=#{shareId} and user_id=#{userId}")
+    void deleteById(String shareId, Integer userId);
+
+    /**
+     * 获取共享目录/路径
+     * @param shareId
+     * @return
+     */
+    @Select("select user_id,end_time,file_path from share where share_id=#{shareId}")
+    ShareDTO getShareFileById(String shareId);
 }
