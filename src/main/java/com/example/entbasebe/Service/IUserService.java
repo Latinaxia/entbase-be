@@ -15,4 +15,5 @@ public interface IUserService {
     Result sendmail(LoginDTO loginDTO);
 
 
+    Result listBuckets();
 }

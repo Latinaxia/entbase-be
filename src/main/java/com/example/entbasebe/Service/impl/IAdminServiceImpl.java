@@ -63,6 +63,7 @@ public class IAdminServiceImpl implements IAdminService {
         return Result.ok("已删除该用户的所有信息！");
     }
 
+    @Transactional
     @Override
     public Result createPublicBucket(String bucketName) {
         //1.创建bucket文件夹
@@ -89,7 +90,10 @@ public class IAdminServiceImpl implements IAdminService {
         bucket.setUserId(8);
         bucket.setBucketId(finalFolder.getFoldId());
         bucket.setIsPublic("1");//设置为共享bucket
-        bucketMapper.save(bucket);
+        bucket.setBucketSpace(2048);
+        log.info("创建了一个共享bucket：{}",bucket);
+
+        bucketMapper.saveBucket(bucket);
 
         return Result.ok("创建共享bucket成功！");
     }

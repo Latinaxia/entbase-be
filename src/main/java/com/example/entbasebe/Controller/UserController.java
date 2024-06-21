@@ -31,7 +31,7 @@ public class UserController {
         return userService.register(loginDTO);
     }
 
-//给前端返回一个base64格式的图片，前端需要转换为图片
+    //给前端返回一个base64格式的图片，前端需要转换为图片
     @GetMapping("/get-captcha")
     public Result ImageBase64AndID() {
         // 定义图形验证码的长和宽
@@ -54,5 +54,9 @@ public class UserController {
         return userService.sendmail(loginDTO);
     }
 
+    @PostMapping("/list-buckets")
+    public Result listBuckets() {
+        return userService.listBuckets();
+    }
 
 }
