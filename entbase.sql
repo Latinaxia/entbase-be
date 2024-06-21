@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `bucket`;
 CREATE TABLE `bucket`  (
   `bucket_id` int NOT NULL,
   `user_id` int NOT NULL,
-  `bucket_space` float NOT NULL DEFAULT 2048.000,
+  `bucket_space` float NOT NULL DEFAULT 2048,
   `is_public` varchar(4) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '0',
   PRIMARY KEY (`bucket_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
