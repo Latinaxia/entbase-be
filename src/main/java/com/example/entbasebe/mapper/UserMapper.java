@@ -18,18 +18,23 @@ public interface UserMapper extends BaseMapper<User> {
     Integer getUserIdByEmail(String userEmail);
 
 
-//    @Select("select b.bucket_space, b.is_public, f.fold_name, f.fold_path " +
-//            "from bucket b join entbase.folder f on b.user_id = f.user_id " +
-//            "where b.is_public = '1' or b.user_id = #{userId} and f.is_bucket = 1")
-//    List<BucketsDTO> listBuckets(Integer userId);
+    @Select("select distinct b.bucket_id,b.bucket_space, b.is_public, f.fold_name, f.fold_path " +
+            "from bucket b join entbase.folder f on b.bucket_id = f.fold_id " +
+            "where (b.is_public = '1') or (b.user_id = #{userId} and f.is_bucket = 1)")
+    List<BucketsDTO> listBuckets(Integer userId);
 
 
     @Select("select bucket_id from bucket where user_id = #{userId} or is_public = '1' ")
     List<Integer> listBucketIds(Integer userId);
 
 
-    @Select("select bucket_id,fold_name,fold_path, bucket_space,is_public " +
-            "from folder f join bucket b on f.user_id = b.user_id " +
-            "where fold_id = #{bucketId} limit 1")
-    BucketsDTO getBucket(Integer bucketId);
+//    @Select("select bucket_id,fold_name,fold_path, bucket_space,is_public " +
+//            "from folder f join bucket b on f.user_id = b.user_id " +
+//            "where fold_id = #{bucketId} limit 1")
+//    BucketsDTO getBucket(Integer bucketId);
+
+//    @Select("SELECT b.bucket_id, b.user_id, b.bucket_space, b.is_public, f.fold_path, f.fold_name " +
+//            "FROM bucket b JOIN folder f ON b.user_id = f.user_id " +
+//            "WHERE b.is_public = '1' ")
+//    BucketsDTO getBucket(Integer bucketId);
 }

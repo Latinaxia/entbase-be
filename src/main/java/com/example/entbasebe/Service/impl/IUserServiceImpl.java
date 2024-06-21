@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.entbasebe.DTO.BucketsDTO;
 import com.example.entbasebe.DTO.LoginDTO;
 import com.example.entbasebe.DTO.UserDTO;
+import com.example.entbasebe.DTO.UserHolderDTO;
 import com.example.entbasebe.Service.IUserService;
 import com.example.entbasebe.Utils.JwtUtils;
 import com.example.entbasebe.Utils.RegexUtils;
@@ -236,30 +237,30 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
     @Override
     public Result listBuckets() {
 
-        UserHolder.saveUser(new UserDTO("entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
+//        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
         //获取当前用户的id
-        String userEmail = UserHolder.getUser().getUserEmail();
-        Integer userId = userMapper.getUserIdByEmail(userEmail);
+        Integer userId = UserHolder.getUser().getUserId();
 
-        //查询该user的所有bucket(个人存储桶和共享存储桶）,将bucketIds保存下来;
-        List<Integer> bucketIds = userMapper.listBucketIds(userId);
-        log.info("用户可见桶的bucket_id：{},长度为：{}",bucketIds,bucketIds.size());
+//        //查询该user的所有bucket(个人存储桶和共享存储桶）,将bucketIds保存下来;
+//        List<Integer> bucketIds = userMapper.listBucketIds(userId);
+//        log.info("用户可见桶的bucket_id：{},长度为：{}",bucketIds,bucketIds.size());
 
 
-        ArrayList<BucketsDTO> buckets = new ArrayList<>();
-        for (Integer bucketId : bucketIds) {
-            try {
-                BucketsDTO bucketsDTO = userMapper.getBucket(bucketId);
-                if (bucketsDTO != null) {
-                    buckets.add(bucketsDTO);
-                    log.info("{}", bucketsDTO);
-                } else {
-                    log.warn("Bucket with ID {} not found", bucketId);
-                }
-            } catch (IndexOutOfBoundsException e) {
-                log.error("Index out of bounds for bucket ID {}", bucketId, e);
-            }
-        }
+        List<BucketsDTO> buckets = userMapper.listBuckets(userId);
+
+//        for (Integer bucketId : bucketIds) {
+//            try {
+//                BucketsDTO bucketsDTO = userMapper.getBucket(bucketId);
+//                if (bucketsDTO != null) {
+//                    buckets.add(bucketsDTO);
+//                    log.info("{}", bucketsDTO);
+//                } else {
+//                    log.warn("Bucket with ID {} not found", bucketId);
+//                }
+//            } catch (IndexOutOfBoundsException e) {
+//                log.error("Index out of bounds for bucket ID {}", bucketId, e);
+//            }
+//        }
 
 
         log.info("用户可见的存储桶信息：{}",buckets);

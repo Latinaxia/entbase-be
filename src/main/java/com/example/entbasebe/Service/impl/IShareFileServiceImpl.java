@@ -2,6 +2,7 @@ package com.example.entbasebe.Service.impl;
 
 import com.example.entbasebe.DTO.ShareFileDTO;
 import com.example.entbasebe.DTO.UserDTO;
+import com.example.entbasebe.DTO.UserHolderDTO;
 import com.example.entbasebe.Service.IShareFileService;
 import com.example.entbasebe.Utils.Result;
 import com.example.entbasebe.Utils.UserHolder;
@@ -42,7 +43,7 @@ public class IShareFileServiceImpl implements IShareFileService {
     @Override
     public Result creatShareFile(Integer bucketId, String password, String filePath) {
 
-        UserHolder.saveUser(new UserDTO("entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
+//        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
         //为要共享的文件生成一个唯一的共享ID，并将该ID，文件路径和密码存入数据库，设置有效期12h
         Path path = Paths.get(filePath);
         String uniqueStringId = UUID.nameUUIDFromBytes(path.toString().getBytes()).toString().substring(0, 6);
@@ -87,7 +88,7 @@ public class IShareFileServiceImpl implements IShareFileService {
 
     @Override
     public Result listShareFile() {
-        UserHolder.saveUser(new UserDTO("entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
+//        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
         //获取当前用户的id
         String userEmail = UserHolder.getUser().getUserEmail();
         Integer userId = userMapperl.getUserIdByEmail(userEmail);
