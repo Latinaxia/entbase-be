@@ -41,4 +41,9 @@ public class AdminController {
         log.info("Delete bucket: " + bucketId);
         return adminService.deleteBucket(bucketId);
     }
+
+    @PostMapping("/list-users")
+    public Result listUsers() {
+        return adminService.listUsers();
+    }
 }

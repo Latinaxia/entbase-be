@@ -30,6 +30,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -232,6 +233,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         //返回结果
         return Result.ok("验证码已发送至邮箱！请注意查收");
     }
+
 
     private void SendMailCode(String email, String code) {
         SimpleMailMessage message = new SimpleMailMessage();

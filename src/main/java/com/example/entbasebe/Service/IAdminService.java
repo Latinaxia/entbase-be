@@ -11,4 +11,6 @@ public interface IAdminService {
     Result editBucket(String bucketName, Integer bucketId);
 
     Result deleteBucket(Integer bucketId);
+
+    Result listUsers();
 }
