@@ -15,6 +15,18 @@ public interface BucketMapper {
     @Delete("delete from bucket where bucket_id = #{bucketId}")
     void deleteBucketById(Integer bucketId);
 
-    @Insert("insert into bucket (bucket_id,user_id,bucket_space,is_public) values (#{bucketId}, #{userId}, #{bucketSpace},#{isPublic})")
+    @Select("select user_id from bucket where bucket_id = #{bucketId}")
+    Integer getUserIdByBucketId(Integer bucketId);
+
+    @Select("select bucket_space from bucket where bucket_id = #{bucketId}")
+    Float getRemainingSpaceById(Integer bucketId);
+
+    @Update("update bucket set bucket_space = #{difference} where bucket_id = #{bucketId}")
+    void updateSpaceByRemainSpaceAndId(@Param("difference") double difference, @Param("bucketId") Integer bucketId);
+
+    @Update("update bucket set bucket_space = bucket_space + #{size} where bucket_id = #{bucketId}")
+    void subSpaceByRemainSpaceAndId(@Param("size")float size, @Param("bucketId")Integer bucketId);
+
+    @Insert("insert into bucket (bucket_id,user_id, bucket_space, is_public) values (#{bucketId}, #{userId}, #{bucketSpace}, #{isPublic})")
     void saveBucket(Bucket bucket);
 }

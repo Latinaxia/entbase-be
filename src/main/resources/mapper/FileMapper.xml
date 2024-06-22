@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.entbasebe.mapper.FileMapper">
+    <insert id="insert">
+        insert into entbase.file
+            (file_path, fold_id, user_id, file_name, creat_time, update_time)
+        values
+            (#{FilePath}, #{FoldId}, #{UserId}, #{FileName}, #{CreatTime}, #{UpdateTime})
+    </insert>
+    <update id="update">
+        update entbase.file
+        set file_path = #{file.FilePath},
+            fold_id = #{file.FoldId},
+            update_time = #{file.UpdateTime},
+            file_name = #{file.FileName}
+        where file_path = #{sourcePath} and user_id = (
+            select user_id from entbase.bucket
+                where bucket_id = #{bucketId}
+            )
+    </update>
+    <update id="updateFilePathAndTime">
+        update entbase.file
+        set file_path = #{file.FilePath},
+            update_time = #{file.UpdateTime}
+        where file_id = #{file.FileId}
+    </update>
+    <delete id="deleteByPathAndBucketId">
+        delete from entbase.file
+            where file_path like concat(#{path}, '%') and user_id = (
+                select user_id from entbase.bucket
+                    where bucket_id = #{bucketId}
+            )
+    </delete>
+    <select id="getFileByPathAndBucketId" resultType="com.example.entbasebe.entity.File">
+        select * from entbase.file
+        where file_path like concat(#{path}, '%') and user_id = (
+            select user_id from entbase.bucket
+            where bucket_id = #{bucketId}
+        )
+        order by creat_time
+    </select>
+    <select id="getOneFileByPathAndBucketId" resultType="com.example.entbasebe.entity.File">
+        select * from entbase.file
+        where file_path = #{path} and user_id = (
+            select user_id from entbase.bucket
+            where bucket_id = #{bucketId}
+        )
+    </select>
+
+</mapper>

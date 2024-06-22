@@ -1,8 +1,8 @@
 package com.example.entbasebe.mapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.entbasebe.entity.Folder;
-import com.example.entbasebe.entity.User;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface FolderMapper {
@@ -25,4 +25,18 @@ public interface FolderMapper {
 
     @Update("update folder set fold_path = #{newPath} where fold_id = #{bucketId}")
     void updateFolderPath(String newPath, Integer bucketId);
+
+    List<Folder> getFolderByPathAndBucketId(@Param(value = "bucketId") Integer bucketId, @Param(value = "path") String path);
+
+    int deleteFolderByIdAndPath(@Param(value = "bucketId")Integer bucketId, @Param(value = "path")String path);
+
+    Integer getIdByBucketIdAndPath(@Param(value = "bucketId")Integer bucketId, @Param(value = "path")String parent);
+
+    void insertOneFolder(Folder folder);
+
+    void updateFolderPathAndTime(@Param("folder")Folder folder);
+
+    void updateFatherId(@Param("fatherId") Integer fatherId, @Param("bucketId") Integer bucketId, @Param("sourcePath") String sourcePath);
+
+    Folder getOneFolderByPathAndBucketId(@Param(value = "path")String sourcePath, @Param(value = "bucketId")Integer bucketId);
 }
