@@ -16,6 +16,13 @@ public class ShareFileController {
     @Resource
     private IShareFileService shareFileService;
 
+    /**
+     * 创建共享文件链接
+     * @param bucketId
+     * @param password
+     * @param filePath
+     * @return
+     */
     @PostMapping("/create")
     public Result creatShareFile(@RequestParam("bucketId") Integer bucketId,
                                  @RequestParam("password") String password,
@@ -23,12 +30,22 @@ public class ShareFileController {
         return shareFileService.creatShareFile(bucketId, password,filePath);
     }
 
+    /**
+     * 获取共享文件
+     * @param shareId
+     * @param pwd
+     * @return
+     */
     @PostMapping("/get/{shareId}")
     public Result getShareFile(@PathVariable("shareId") String shareId,@RequestParam("password") String pwd) {
         log.info("getShareFile shareId:{},pwd:{}",shareId,pwd);
         return shareFileService.getShareFile(shareId,pwd);
     }
 
+    /**
+     * 列出用户的所有共享文件
+     * @return
+     */
     @PostMapping("/list")
     public Result listShareFile(){
         return shareFileService.listShareFile();

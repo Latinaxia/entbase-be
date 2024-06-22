@@ -177,12 +177,6 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         bucket.setBucketId(finalFolder.getFoldId());
         bucketMapper.save(bucket);
 
-
-        //将用户信息存入UserHolder
-//        UserDTO userDTO = BeanUtil.copyProperties(finalUser, UserDTO.class);
-//        log.info("DTO{}",userDTO);
-//        UserHolder.saveUser(userDTO);
-
         //自定义Map,将所有字段的值都转为String,为jwt令牌生成做准备
         Map<String, Object> userMap = BeanUtil.beanToMap(newUser, new HashMap<>(),
                 CopyOptions.create()
@@ -237,16 +231,22 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
     @Override
     public Result listBuckets() {
 
-//        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
+        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
         //获取当前用户的id
         Integer userId = UserHolder.getUser().getUserId();
 
+        //判断是否是管理员
+        String isAdmin = UserHolder.getUser().getIsAdmin();
+        List<BucketsDTO> buckets = new ArrayList<>();
+        if(isAdmin.equals("0")){
+            buckets = userMapper.listBuckets(userId);
+        }
+        else{
+            buckets = userMapper.listAllBuckets();
+        }
 //        //查询该user的所有bucket(个人存储桶和共享存储桶）,将bucketIds保存下来;
 //        List<Integer> bucketIds = userMapper.listBucketIds(userId);
 //        log.info("用户可见桶的bucket_id：{},长度为：{}",bucketIds,bucketIds.size());
-
-
-        List<BucketsDTO> buckets = userMapper.listBuckets(userId);
 
 //        for (Integer bucketId : bucketIds) {
 //            try {
@@ -261,7 +261,6 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
 //                log.error("Index out of bounds for bucket ID {}", bucketId, e);
 //            }
 //        }
-
 
         log.info("用户可见的存储桶信息：{}",buckets);
 

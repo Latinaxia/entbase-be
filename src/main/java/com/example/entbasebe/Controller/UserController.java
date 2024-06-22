@@ -19,19 +19,33 @@ public class UserController {
     @Resource
     private IUserService userService;
 
+    /**
+     * 用户登录
+     * @param loginDTO
+     * @param session
+     * @return
+     */
     @PostMapping("/login")
     public Result login(@RequestBody LoginDTO loginDTO, HttpSession session) {
         log.info("loginDTO: {}", loginDTO);
         return userService.login(loginDTO, session);
     }
 
+    /**
+     * 用户注册
+     * @param loginDTO
+     * @return
+     */
     @PostMapping("/register")
     public Result register(@RequestBody LoginDTO loginDTO) {
         log.info("loginDTO: {}", loginDTO);
         return userService.register(loginDTO);
     }
 
-    //给前端返回一个base64格式的图片，前端需要转换为图片
+    /**
+     * 给前端返回一个base64格式的图片，前端需要转换为图片验证码
+     * @return
+     */
     @GetMapping("/get-captcha")
     public Result ImageBase64AndID() {
         // 定义图形验证码的长和宽
@@ -48,12 +62,21 @@ public class UserController {
         return Result.ok(imageCode);
     }
 
+    /**
+     * 发送邮件
+     * @param loginDTO
+     * @return
+     */
     @PostMapping("/get-email-code")
     public Result sendmail(@RequestBody LoginDTO loginDTO) {
         log.info("loginDTO: {}", loginDTO);
         return userService.sendmail(loginDTO);
     }
 
+    /**
+     * 列出用户的所有存储桶
+     * @return
+     */
     @PostMapping("/list-buckets")
     public Result listBuckets() {
         return userService.listBuckets();
