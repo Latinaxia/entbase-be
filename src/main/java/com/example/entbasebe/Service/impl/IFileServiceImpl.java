@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -246,7 +245,6 @@ public class IFileServiceImpl implements IFileService {
     }
 
     //判断用户话参数是否合法
-    @Nullable
     private Result isLegal(UserHolderDTO user, Integer bucketId, String... path) {
         if (user == null){
             return Result.fail("未登录");
