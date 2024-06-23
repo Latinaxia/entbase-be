@@ -26,11 +26,11 @@ public interface FolderMapper {
     @Update("update folder set fold_path = #{newPath} where fold_id = #{bucketId}")
     void updateFolderPath(String newPath, Integer bucketId);
 
-    List<Folder> getFolderByPathAndBucketId(@Param(value = "bucketId") Integer bucketId, @Param(value = "path") String path);
+    List<Folder> getFolderByPathAndBucketId(@Param("bucketId") Integer bucketId, @Param("path") String path);
 
-    int deleteFolderByIdAndPath(@Param(value = "bucketId")Integer bucketId, @Param(value = "path")String path);
+    int deleteFolderByIdAndPath(@Param("bucketId")Integer bucketId, @Param("path")String path);
 
-    Integer getIdByBucketIdAndPath(@Param(value = "bucketId")Integer bucketId, @Param(value = "path")String parent);
+    Integer getIdByBucketIdAndPath(@Param("bucketId")Integer bucketId, @Param("path")String parent);
 
     void insertOneFolder(Folder folder);
 
@@ -38,5 +38,5 @@ public interface FolderMapper {
 
     void updateFatherId(@Param("fatherId") Integer fatherId, @Param("bucketId") Integer bucketId, @Param("sourcePath") String sourcePath);
 
-    Folder getOneFolderByPathAndBucketId(@Param(value = "path")String sourcePath, @Param(value = "bucketId")Integer bucketId);
+    Folder getOneFolderByPathAndBucketId(@Param("path")String sourcePath, @Param("bucketId")Integer bucketId);
 }
