@@ -115,7 +115,6 @@ public class IFileServiceImpl implements IFileService {
         String path = pathDTO.getPath();
         path = folderMapper.getPathByBucketId(bucketId) + path;
         Result legal = isLegal(UserHolder.getUser(), bucketId, path);
-
         if (legal != null){
             return legal;
         }
