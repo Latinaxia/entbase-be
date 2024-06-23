@@ -38,4 +38,7 @@ public interface FolderMapper {
     void updateFatherId(@Param("fatherId") Integer fatherId, @Param("bucketId") Integer bucketId, @Param("sourcePath") String sourcePath);
 
     Folder getOneFolderByPathAndBucketId(@Param("path")String sourcePath, @Param("bucketId")Integer bucketId);
+
+    @Select("select fold_path from entbase.folder where fold_id = #{bucketId}")
+    String getPathByBucketId(Integer bucketId);
 }

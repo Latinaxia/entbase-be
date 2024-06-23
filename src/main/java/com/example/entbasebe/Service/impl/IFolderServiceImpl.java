@@ -20,6 +20,7 @@ public class IFolderServiceImpl implements IFolderService {
     private FolderMapper folderMapper;
     @Override
     public Result createFolder(Integer bucketId, String path) {
+        path = folderMapper.getPathByBucketId(bucketId) + path;
         UserHolderDTO user = UserHolder.getUser();
         if (user == null){
             return Result.fail("未登录");
@@ -27,20 +28,12 @@ public class IFolderServiceImpl implements IFolderService {
         if (bucketId == null){
             return Result.fail("桶ID不能为空！");
         }
-        if (path == null){
-            return Result.fail("路径不能为空!");
-        }
         Integer userId = user.getUserId();
         //在本地创建一个文件夹
         if (folderMapper.getOneFolderByPathAndBucketId(path, bucketId) != null){
             return Result.fail("已存在同名文件夹");
         }
         Integer fatherId = folderMapper.getIdByBucketIdAndPath(bucketId, path.substring(0, path.lastIndexOf("/")));
-        try {
-            FileUtil.mkdir("./data/" + UserHolder.getUser().getUserEmail() + path);
-        } catch (Exception e) {
-            return Result.fail("创建失败!");
-        }
         //添加到数据库中（folder）
         Folder folder = new Folder();
         folder.setCreatTime(LocalDateTime.now())
@@ -50,6 +43,11 @@ public class IFolderServiceImpl implements IFolderService {
                 .setFoldName(FileUtil.getName(path))
                 .setIsBucket(0)//0表示不共享
                 .setUserId(userId);
+        try {
+            FileUtil.mkdir(path);
+        } catch (Exception e) {
+            return Result.fail("创建失败!");
+        }
         try {
             folderMapper.insertOneFolder(folder);
         } catch (Exception e) {

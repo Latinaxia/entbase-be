@@ -35,6 +35,7 @@ public class IFileServiceImpl implements IFileService {
 
     @Override
     public Result getFiles(Integer bucketId, String path) {
+        path = folderMapper.getPathByBucketId(bucketId) + path;
         Result legal = isLegal(UserHolder.getUser(), bucketId, path);
         if (legal != null){
             return legal;
@@ -82,11 +83,12 @@ public class IFileServiceImpl implements IFileService {
     @Override
     @Transactional
     public Result deleteFile(Integer bucketId, String path) {
+        path = folderMapper.getPathByBucketId(bucketId) + path;
         Result legal = isLegal(UserHolder.getUser(), bucketId, path);
         if (legal != null){
             return legal;
         }
-        java.io.File file = FileUtil.file("./data/" + UserHolder.getUser().getUserEmail() + path);
+        java.io.File file = FileUtil.file(path);
         //计算文件大小（MB）
         float size = (float) file.length() / 1024 / 1024;
         //在本地删除
@@ -102,7 +104,6 @@ public class IFileServiceImpl implements IFileService {
         }
         //释放空间
         bucketMapper.subSpaceByRemainSpaceAndId(size, bucketId);
-
         return Result.ok();
     }
 
@@ -110,12 +111,13 @@ public class IFileServiceImpl implements IFileService {
     public Result getFile(PathDTO pathDTO) {
         Integer bucketId = pathDTO.getBucketId();
         String path = pathDTO.getPath();
+        path = folderMapper.getPathByBucketId(bucketId) + path;
         Result legal = isLegal(UserHolder.getUser(), bucketId, path);
         if (legal != null){
             return legal;
         }
         try {
-            return Result.ok(FileUtil.readBytes("./data/" + UserHolder.getUser().getUserEmail() + path));
+            return Result.ok(FileUtil.readBytes(path));
         } catch (IORuntimeException e) {
             return Result.fail("文件不存在或读取时发生错误！");
         }
@@ -127,6 +129,8 @@ public class IFileServiceImpl implements IFileService {
         Integer bucketId = fileMoveDTO.getBucketId();
         String sourcePath = fileMoveDTO.getSourcePath();
         String targetPath = fileMoveDTO.getTargetPath();
+        sourcePath = folderMapper.getPathByBucketId(bucketId) + sourcePath;
+        targetPath = folderMapper.getPathByBucketId(bucketId) + targetPath;
         String finalPath;
         Result legal = isLegal(UserHolder.getUser(), bucketId, sourcePath, targetPath);
         if (legal != null){
@@ -181,9 +185,9 @@ public class IFileServiceImpl implements IFileService {
             try {
                 //本地移动文件（夹）
                 java.io.File absoluteSourceFile =
-                        new java.io.File("target/classes/data/" + UserHolder.getUser().getUserEmail() + sourcePath).getAbsoluteFile();
+                        new java.io.File("target/classes/" + sourcePath.substring(2)).getAbsoluteFile();
                 java.io.File absoluteTargetFile =
-                        new java.io.File("target/classes/data/" + UserHolder.getUser().getUserEmail() + targetPath).getAbsoluteFile();
+                        new java.io.File("target/classes/" + targetPath.substring(2)).getAbsoluteFile();
 //                Path path1 = Paths.get("./data", String.valueOf(UserHolder.getUser().getUserEmail()), sourcePath);
 //                Path path2 = Paths.get("./data", String.valueOf(UserHolder.getUser().getUserEmail()), targetPath);
                 FileUtil.move(absoluteSourceFile, absoluteTargetFile, true);
@@ -201,6 +205,7 @@ public class IFileServiceImpl implements IFileService {
     @Override
     @Transactional
     public Result uploadFile(String path, Integer bucketId, MultipartFile multipartFile) {
+        path = folderMapper.getPathByBucketId(bucketId) + path;
         UserHolderDTO user = UserHolder.getUser();
         Result legal = isLegal(user, bucketId, path);
         if (legal != null){
@@ -236,7 +241,6 @@ public class IFileServiceImpl implements IFileService {
                     .setFoldId(foldId);
             fileMapper.insert(file);
             //7. 在本地实现文件上传
-            path = "./data/" + UserHolder.getUser().getUserEmail() + path;
             multipartFile.transferTo(FileUtil.file(path));
         } catch (Exception e) {
             throw new RuntimeException("未知原因导致文件上传失败！");
