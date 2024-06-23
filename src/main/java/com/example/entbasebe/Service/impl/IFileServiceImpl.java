@@ -209,10 +209,10 @@ public class IFileServiceImpl implements IFileService {
     public Result uploadFile(String path, Integer bucketId, MultipartFile multipartFile) {
         path = folderMapper.getPathByBucketId(bucketId) + path;
         UserHolderDTO user = UserHolder.getUser();
-        Result legal = isLegal(user, bucketId, path);
-        if (legal != null){
-            return legal;
-        }
+//        Result legal = isLegal(user, bucketId, path);
+//        if (legal != null){
+//            return legal;
+//        }
         if (multipartFile.isEmpty()) {
             return Result.fail("上传的文件不能为空！");
         }
