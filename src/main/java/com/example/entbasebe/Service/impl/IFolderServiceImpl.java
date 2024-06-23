@@ -26,6 +26,7 @@ public class IFolderServiceImpl implements IFolderService {
         if (user == null){
             return Result.fail("未登录");
         }
+
         if (bucketId == null){
             return Result.fail("桶ID不能为空！");
         }
