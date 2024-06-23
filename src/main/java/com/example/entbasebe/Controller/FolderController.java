@@ -13,6 +13,7 @@ public class FolderController {
     private IFolderService folderService;
     @PostMapping("/create-dir")
     public Result createFolder(Integer bucketId, String path){
+
         log.info("在桶id为:{}的桶下创建一个路径为：{}的文件夹", bucketId, path);
         return folderService.createFolder(bucketId, path);
     }

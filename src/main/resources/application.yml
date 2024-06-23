@@ -1,17 +1,15 @@
-server:
-  port: 8080
 spring:
   application:
     name: entbase
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/entbase?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://127.0.0.1:3306/entbase?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
-    password: 6327zxt523
+    password: wm20031216.
   redis:
-    host: 192.168.88.130
+    host: localhost
     port: 6379
-    password: zxt
+    password: wm20031216.
     lettuce:
       pool:
         max-active: 10
@@ -25,9 +23,9 @@ spring:
     #
     default-encoding: UTF-8
     #
-    username: 3276327856@qq.com
+    username: 2146835742@qq.com
     #
-    password: snaquydrfzxudaea
+    password: blktpeinflmvdcii
 
     properties:
       mail:

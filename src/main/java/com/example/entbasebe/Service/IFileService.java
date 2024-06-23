@@ -6,6 +6,7 @@ import com.example.entbasebe.Utils.Result;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface IFileService {
+
     Result getFiles(Integer bucketId, String path);
 
     Result deleteFile(Integer bucketId, String path);

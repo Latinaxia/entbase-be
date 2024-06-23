@@ -15,9 +15,6 @@ public interface BucketMapper {
     @Delete("delete from bucket where bucket_id = #{bucketId}")
     void deleteBucketById(Integer bucketId);
 
-    @Select("select user_id from bucket where bucket_id = #{bucketId}")
-    Integer getUserIdByBucketId(Integer bucketId);
-
     @Select("select bucket_space from bucket where bucket_id = #{bucketId}")
     Float getRemainingSpaceById(Integer bucketId);
 

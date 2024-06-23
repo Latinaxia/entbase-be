@@ -19,18 +19,18 @@ public class IFolderServiceImpl implements IFolderService {
     @Resource
     private FolderMapper folderMapper;
     @Override
-    public Result cereateFolder(Integer bucketId, String path) {
+    public Result createFolder(Integer bucketId, String path) {
         UserHolderDTO user = UserHolder.getUser();
         if (user == null){
             return Result.fail("未登录");
         }
-        Integer userId = user.getUserId();
         if (bucketId == null){
             return Result.fail("桶ID不能为空！");
         }
         if (path == null){
             return Result.fail("路径不能为空!");
         }
+        Integer userId = user.getUserId();
         //在本地创建一个文件夹
         if (folderMapper.getOneFolderByPathAndBucketId(path, bucketId) != null){
             return Result.fail("已存在同名文件夹");

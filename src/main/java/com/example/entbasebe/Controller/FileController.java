@@ -20,6 +20,7 @@ public class FileController {
 
     @PostMapping("/file/list")
     public Result listFiles(Integer bucketId, String path){
+
         return fileService.getFiles(bucketId, path);
     }
 

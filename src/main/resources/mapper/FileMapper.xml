@@ -16,7 +16,7 @@
             file_name = #{file.FileName}
         where file_path = #{sourcePath} and user_id = (
             select user_id from entbase.bucket
-                where bucket_id = #{bucketId}
+            where bucket_id = #{bucketId}
             )
     </update>
     <update id="updateFilePathAndTime">
@@ -29,7 +29,7 @@
         delete from entbase.file
             where file_path like concat(#{path}, '%') and user_id = (
                 select user_id from entbase.bucket
-                    where bucket_id = #{bucketId}
+                where bucket_id = #{bucketId}
             )
     </delete>
     <select id="getFileByPathAndBucketId" resultType="com.example.entbasebe.entity.File">
