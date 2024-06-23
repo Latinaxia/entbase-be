@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -41,10 +42,10 @@ public class IFolderServiceImpl implements IFolderService {
                 .setFatherId(fatherId)
                 .setFoldPath(path)
                 .setFoldName(FileUtil.getName(path))
-                .setIsBucket(0)//0表示不共享
+                .setIsBucket(0)
                 .setUserId(userId);
         try {
-            FileUtil.mkdir(path);
+            new File(path).mkdirs();
         } catch (Exception e) {
             return Result.fail("创建失败!");
         }
