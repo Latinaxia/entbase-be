@@ -20,10 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
-import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
-
 
 @Slf4j
 @Service
@@ -121,7 +121,7 @@ public class IFileServiceImpl implements IFileService {
         try {
             return Result.ok(FileUtil.readBytes(path));
         } catch (IORuntimeException e) {
-            return Result.fail("文件不存在或读取时发生错误！");
+            throw new RuntimeException("文件不存在或读取时发生错误！");
         }
     }
 
@@ -186,14 +186,7 @@ public class IFileServiceImpl implements IFileService {
             }
             try {
                 //本地移动文件（夹）
-                java.io.File absoluteSourceFile =
-                        new java.io.File("target/classes/" + sourcePath.substring(2)).getAbsoluteFile();
-                java.io.File absoluteTargetFile =
-                        new java.io.File("target/classes/" + targetPath.substring(2)).getAbsoluteFile();
-//                Path path1 = Paths.get("./data", String.valueOf(UserHolder.getUser().getUserEmail()), sourcePath);
-//                Path path2 = Paths.get("./data", String.valueOf(UserHolder.getUser().getUserEmail()), targetPath);
-                FileUtil.move(absoluteSourceFile, absoluteTargetFile, true);
-//                FileUtil.move(path1, path2, true);
+                FileUtil.move(Paths.get(sourcePath), Paths.get(targetPath), true);
             } catch (Exception e) {
                 throw new RuntimeException("路径不存在！");
             }
@@ -209,10 +202,10 @@ public class IFileServiceImpl implements IFileService {
     public Result uploadFile(String path, Integer bucketId, MultipartFile multipartFile) {
         path = folderMapper.getPathByBucketId(bucketId) + path;
         UserHolderDTO user = UserHolder.getUser();
-//        Result legal = isLegal(user, bucketId, path);
-//        if (legal != null){
-//            return legal;
-//        }
+        Result legal = isLegal(user, bucketId, path);
+        if (legal != null){
+            return legal;
+        }
         if (multipartFile.isEmpty()) {
             return Result.fail("上传的文件不能为空！");
         }
@@ -235,32 +228,21 @@ public class IFileServiceImpl implements IFileService {
             String foldPath = path.substring(0, path.lastIndexOf("/"));
             String fileName = path.substring(path.lastIndexOf("/") + 1);
             Integer foldId = folderMapper.getIdByBucketIdAndPath(bucketId, foldPath);
-
             file.setUpdateTime(LocalDateTime.now())
                     .setCreatTime(LocalDateTime.now())
                     .setFilePath(path)
                     .setFileName(fileName)
                     .setUserId(userId)
                     .setFoldId(foldId);
-            try {
-                fileMapper.insert(file);
-            } catch (Exception e) {
-                throw new RuntimeException("数据库操作失败！");
-            }
-
-            try {
-                multipartFile.transferTo(FileUtil.file(path));
-
-
-            } catch (IOException e) {
-                throw new RuntimeException("文件传输错误！");
-            }
-
+            fileMapper.insert(file);
+            //7. 在本地实现文件上传
+            multipartFile.transferTo(Path.of(path));
         } catch (Exception e) {
-            throw new RuntimeException("其他原因导致文件上传失败！");
+            throw new RuntimeException("未知原因导致文件上传失败！");
+//            return Result.fail("未知原因导致文件上传失败！");
         }
 
-        return Result.ok("文件上传完成！");
+        return Result.ok();
     }
 
     //判断用户话参数是否合法
