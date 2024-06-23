@@ -10,7 +10,7 @@ public interface IUserService {
 
     Result register(LoginDTO loginDTO);
 
-    void saveCodeId(String code);
+    String saveCodeId(String code);
 
     Result sendmail(LoginDTO loginDTO);
 

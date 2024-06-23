@@ -20,8 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+
 
 @Slf4j
 @Service
@@ -233,21 +235,32 @@ public class IFileServiceImpl implements IFileService {
             String foldPath = path.substring(0, path.lastIndexOf("/"));
             String fileName = path.substring(path.lastIndexOf("/") + 1);
             Integer foldId = folderMapper.getIdByBucketIdAndPath(bucketId, foldPath);
+
             file.setUpdateTime(LocalDateTime.now())
                     .setCreatTime(LocalDateTime.now())
                     .setFilePath(path)
                     .setFileName(fileName)
                     .setUserId(userId)
                     .setFoldId(foldId);
-            fileMapper.insert(file);
-            //7. 在本地实现文件上传
-            multipartFile.transferTo(FileUtil.file(path));
+            try {
+                fileMapper.insert(file);
+            } catch (Exception e) {
+                throw new RuntimeException("数据库操作失败！");
+            }
+
+            try {
+                multipartFile.transferTo(FileUtil.file(path));
+
+
+            } catch (IOException e) {
+                throw new RuntimeException("文件传输错误！");
+            }
+
         } catch (Exception e) {
-            throw new RuntimeException("未知原因导致文件上传失败！");
-//            return Result.fail("未知原因导致文件上传失败！");
+            throw new RuntimeException("其他原因导致文件上传失败！");
         }
 
-        return Result.ok();
+        return Result.ok("文件上传完成！");
     }
 
     //判断用户话参数是否合法

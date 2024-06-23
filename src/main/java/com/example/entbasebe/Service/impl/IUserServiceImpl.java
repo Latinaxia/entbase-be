@@ -23,14 +23,12 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import java.io.File;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -191,12 +189,12 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
     }
 
     @Override
-    public void saveCodeId(String code) {
+    public String saveCodeId(String code) {
         //存入redis中，用于校验验证码,有效期10分钟
-        //这里必须用set("codeId",code,10*60, TimeUnit.SECONDS)这个方法，新的code才会完全覆盖原code，避免乱码现象
-        stringRedisTemplate.opsForValue().set("codeId",code,10*60, TimeUnit.SECONDS);
-        //添加redisConfig后，解决了乱码问题
-//        stringRedisTemplate.expire("codeId", 10, TimeUnit.MINUTES);
+        Random random = new Random();
+        String codeId = String.valueOf(1000 + random.nextInt(9000));
+        stringRedisTemplate.opsForValue().set(codeId,code,10*60, TimeUnit.SECONDS);
+        return codeId;
     }
 
     @Override
