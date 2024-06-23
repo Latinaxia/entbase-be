@@ -38,10 +38,10 @@ public class IFileServiceImpl implements IFileService {
     @Override
     public Result getFiles(Integer bucketId, String path) {
         path = folderMapper.getPathByBucketId(bucketId) + path;
-//        Result legal = isLegal(UserHolder.getUser(), bucketId, path);
-//        if (legal != null){
-//            return legal;
-//        }
+        Result legal = isLegal(UserHolder.getUser(), bucketId, path);
+        if (legal != null){
+            return legal;
+        }
         //获取所有以path开头的文件和文件夹
         List<com.example.entbasebe.entity.File> fileList = fileMapper.getFileByPathAndBucketId(bucketId, path);
         List<Folder> folderList = folderMapper.getFolderByPathAndBucketId(bucketId, path);
