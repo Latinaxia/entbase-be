@@ -34,6 +34,13 @@ public class LoginInterceptor implements HandlerInterceptor {
         String url = req.getRequestURL().toString();
         log.info("请求的url: {}",url);
 
+        String method = req.getMethod();
+        log.info("请求的方法: {}",method);
+        if("OPTIONS".equalsIgnoreCase(method)){
+            log.info("OPTIONS请求,放行...");
+            return true;
+        }
+
         //2.判断请求url中是否包含login，如果包含，说明是登录操作，放行
         if(url.contains("/login")){
             log.info("登录操作, 放行...");
