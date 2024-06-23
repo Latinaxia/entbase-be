@@ -10,7 +10,9 @@ import java.util.Map;
 public class JwtUtils {
 
     private static final String signKey = "zxtnbclass6666";
-    private static final Long expire = 43200000L;//有效期12小时
+//    private static final Long expire = 43200000L;//有效期12小时
+
+    private static final Long expire = 7 * 24 * 60 * 60 * 1000L; // 有效期七天
 
     /**
      * 生成JWT令牌
