@@ -7,7 +7,7 @@ import java.util.List;
 
 @Mapper
 public interface FileMapper {
-    List<File> getFileByPathAndBucketId(@Param("bucketId")Integer bucketId, @Param("path") String path);
+    List<File> getFileByPath(@Param("path") String path);
 
     int deleteByPathAndBucketId(@Param("bucketId")Integer bucketId, @Param("path")String path);
 

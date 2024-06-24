@@ -1,7 +1,6 @@
 package com.example.entbasebe.Service.impl;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IORuntimeException;
 import com.example.entbasebe.DTO.FileMoveDTO;
 import com.example.entbasebe.DTO.PathDTO;
 import com.example.entbasebe.DTO.UserHolderDTO;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -42,8 +42,8 @@ public class IFileServiceImpl implements IFileService {
         }
         path = folderMapper.getPathByBucketId(bucketId) + (path.equals("/") ? "" : path);
         //获取所有以path开头的文件和文件夹
-        List<com.example.entbasebe.entity.File> fileList = fileMapper.getFileByPathAndBucketId(bucketId, path);
-        List<Folder> folderList = folderMapper.getFolderByPathAndBucketId(bucketId, path);
+        List<com.example.entbasebe.entity.File> fileList = fileMapper.getFileByPath(path);
+        List<Folder> folderList = folderMapper.getFolderByPath(path);
         ArrayList<FileVO> fileVOList = new ArrayList<>();
         //对于文件夹，筛选其中父路径完全等于path的文件夹
         for (Folder folder : folderList) {
@@ -89,7 +89,7 @@ public class IFileServiceImpl implements IFileService {
         if (legal != null){
             return legal;
         }
-        java.io.File file = FileUtil.file(path);
+        java.io.File file = new java.io.File(path);
         //计算文件大小（MB）
         float size = (float) file.length() / 1024 / 1024;
         //在本地删除
@@ -118,8 +118,8 @@ public class IFileServiceImpl implements IFileService {
             return legal;
         }
         try {
-            return Result.ok(FileUtil.readBytes(path));
-        } catch (IORuntimeException e) {
+            return Result.ok(Files.readAllBytes(Path.of(path)));//FileUtil.readBytes(path)
+        } catch (Exception e) {
             throw new RuntimeException("文件不存在或读取时发生错误！");
         }
     }
@@ -151,7 +151,7 @@ public class IFileServiceImpl implements IFileService {
                 //2. 获取该folder的parent
                 String sParent = sourcePath.substring(0, sourcePath.lastIndexOf("/"));
                 //3. 找出所有以sourcePath开头的文件夹
-                List<Folder> folderList = folderMapper.getFolderByPathAndBucketId(bucketId, sourcePath);
+                List<Folder> folderList = folderMapper.getFolderByPath(sourcePath);
                 //4. 采用循环，将这些文件夹的fold_path减去开头的parent得到新的path
                 for (Folder fd : folderList) {
                     String foldPath = fd.getFoldPath();
@@ -164,7 +164,7 @@ public class IFileServiceImpl implements IFileService {
                     folderMapper.updateFolderPathAndTime(fd);
                 }
                 //8. 找出所有以sourcePath开头的文件
-                List<File> fileList = fileMapper.getFileByPathAndBucketId(bucketId, sourcePath);
+                List<File> fileList = fileMapper.getFileByPath(sourcePath);
                 //9. 执行第4、5、6、7步
                 for (File fi : fileList) {
                     String filePath = fi.getFilePath();

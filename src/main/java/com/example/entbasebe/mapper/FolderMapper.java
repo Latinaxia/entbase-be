@@ -25,7 +25,7 @@ public interface FolderMapper {
     @Update("update entbase.folder set fold_path = #{newPath} where fold_id = #{bucketId}")
     void updateFolderPath(String newPath, Integer bucketId);
 
-    List<Folder> getFolderByPathAndBucketId(@Param("bucketId") Integer bucketId, @Param("path") String path);
+    List<Folder> getFolderByPath(@Param("path") String path);
 
     int deleteFolderByIdAndPath(@Param("bucketId")Integer bucketId, @Param("path")String path);
 

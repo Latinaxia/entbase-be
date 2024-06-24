@@ -21,39 +21,23 @@
         set
             father_id = #{fatherId}
         where
-            fold_path = #{sourcePath} and user_id = (
-                select user_id from entbase.bucket
-                where bucket_id = #{bucketId}
-            )
+            fold_path = #{sourcePath}
     </update>
 
     <delete id="deleteFolderByIdAndPath">
         delete from entbase.folder
-            where fold_path like concat(#{path}, '%') and user_id = (
-                select user_id from entbase.bucket
-                where bucket_id = #{bucketId}
-            )
+            where fold_path like concat(#{path}, '/', '%') or fold_path = #{path}
     </delete>
-    <select id="getFolderByPathAndBucketId" resultType="com.example.entbasebe.entity.Folder">
+    <select id="getFolderByPath" resultType="com.example.entbasebe.entity.Folder">
         select * from entbase.folder
-        where fold_path like concat(#{path}, '%') and user_id = (
-            select user_id from entbase.bucket
-            where bucket_id = #{bucketId}
-        )
-
+        where fold_path like concat(#{path}, '%')
         order by creat_time
     </select>
     <select id="getIdByBucketIdAndPath" resultType="java.lang.Integer">
         select fold_id from entbase.folder
-            where fold_path = #{path} and user_id = (
-                select user_id from entbase.bucket
-                where bucket_id = #{bucketId}
-            )
+            where fold_path = #{path}
     </select>
     <select id="getOneFolderByPathAndBucketId" resultType="com.example.entbasebe.entity.Folder">
-        select * from entbase.folder where fold_path = #{path} and user_id = (
-            select user_id from entbase.bucket
-            where bucket.bucket_id = #{bucketId}
-            )
+        select * from entbase.folder where fold_path = #{path}
     </select>
 </mapper>
