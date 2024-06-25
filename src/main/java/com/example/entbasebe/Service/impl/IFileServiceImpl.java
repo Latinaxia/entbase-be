@@ -187,7 +187,8 @@ public class IFileServiceImpl implements IFileService {
             }
             try {
                 //本地移动文件（夹）
-                Files.move(Path.of(sourcePath), Path.of(targetPath), StandardCopyOption.REPLACE_EXISTING);
+                Files.move(Path.of(sourcePath), Path.of(targetPath),
+                        StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception e) {
                 throw new RuntimeException("路径不存在！");
             }

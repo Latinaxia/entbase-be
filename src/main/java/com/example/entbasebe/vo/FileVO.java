@@ -9,15 +9,10 @@ import java.time.LocalDateTime;
 @Builder
 public class FileVO {
     private LocalDateTime createTime;
-
     private LocalDateTime updateTime;
-
     private Integer userId;
-
     private String path;
-
     private String fileName;
-
     private Boolean isFolder;
 
 }
