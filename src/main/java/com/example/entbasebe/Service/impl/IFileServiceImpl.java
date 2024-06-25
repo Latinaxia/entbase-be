@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -57,6 +57,7 @@ public class IFileServiceImpl implements IFileService {
                         .fileName(folder.getFoldName())
                         .createTime(folder.getCreatTime())
                         .updateTime(folder.getUpdateTime())
+                        .isFolder(true)
                         .build();
                 fileVOList.add(fileVO);
             }
@@ -73,6 +74,7 @@ public class IFileServiceImpl implements IFileService {
                         .createTime(file.getCreatTime())
                         .updateTime(file.getUpdateTime())
                         .path(file.getFilePath())
+                        .isFolder(false)
                         .build();
                 fileVOList.add(fileVO);
             }
@@ -185,7 +187,7 @@ public class IFileServiceImpl implements IFileService {
             }
             try {
                 //本地移动文件（夹）
-                FileUtil.move(Paths.get(sourcePath), Paths.get(targetPath), true);
+                Files.move(Path.of(sourcePath), Path.of(targetPath), StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception e) {
                 throw new RuntimeException("路径不存在！");
             }

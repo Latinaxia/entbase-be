@@ -18,4 +18,6 @@ public class FileVO {
 
     private String fileName;
 
+    private Boolean isFolder;
+
 }
