@@ -24,7 +24,7 @@
             fold_path = #{sourcePath}
     </update>
 
-    <delete id="deleteFolderByIdAndPath">
+    <delete id="deleteByPath">
         delete from entbase.folder
             where fold_path like concat(#{path}, '/', '%') or fold_path = #{path}
     </delete>
@@ -33,11 +33,11 @@
         where fold_path like concat(#{path}, '%')
         order by creat_time
     </select>
-    <select id="getIdByBucketIdAndPath" resultType="java.lang.Integer">
+    <select id="getIdByPath" resultType="java.lang.Integer">
         select fold_id from entbase.folder
             where fold_path = #{path}
     </select>
-    <select id="getOneFolderByPathAndBucketId" resultType="com.example.entbasebe.entity.Folder">
+    <select id="getOneFolderByPath" resultType="com.example.entbasebe.entity.Folder">
         select * from entbase.folder where fold_path = #{path}
     </select>
 </mapper>

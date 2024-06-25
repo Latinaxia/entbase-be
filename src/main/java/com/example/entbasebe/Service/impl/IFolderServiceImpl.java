@@ -31,10 +31,10 @@ public class IFolderServiceImpl implements IFolderService {
         }
         Integer userId = user.getUserId();
         //在本地创建一个文件夹
-        if (folderMapper.getOneFolderByPathAndBucketId(path, bucketId) != null){
+        if (folderMapper.getOneFolderByPath(path) != null){
             return Result.fail("已存在同名文件夹");
         }
-        Integer fatherId = folderMapper.getIdByBucketIdAndPath(bucketId, path.substring(0, path.lastIndexOf("/")));
+        Integer fatherId = folderMapper.getIdByPath(path.substring(0, path.lastIndexOf("/")));
         //添加到数据库中（folder）
         Folder folder = new Folder();
         folder.setCreatTime(LocalDateTime.now())
@@ -45,7 +45,9 @@ public class IFolderServiceImpl implements IFolderService {
                 .setIsBucket(0)
                 .setUserId(userId);
         try {
-            new File(path).mkdirs();
+            if (!new File(path).mkdir()){
+                throw new RuntimeException();
+            }
         } catch (Exception e) {
             return Result.fail("创建失败!");
         }

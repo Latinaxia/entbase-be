@@ -105,8 +105,8 @@ public class IFileServiceImpl implements IFileService {
         }
         //在数据库删除(file & folder)
         try {
-            fileMapper.deleteByPathAndBucketId(bucketId, path);
-            folderMapper.deleteFolderByIdAndPath(bucketId, path);
+            fileMapper.deleteByPath(path);
+            folderMapper.deleteByPath(path);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -162,10 +162,10 @@ public class IFileServiceImpl implements IFileService {
             //获取targetPath的parent部分
             String tParent = targetPath.substring(0, targetPath.lastIndexOf("/"));
             //根据parent获取foldId
-            Integer foldId = folderMapper.getIdByBucketIdAndPath(bucketId, tParent);
+            Integer foldId = folderMapper.getIdByPath(tParent);
             //10. 修改fold_path = sourcePath的文件夹的fatherId = foldId
-            folderMapper.updateFatherId(foldId, bucketId, sourcePath);
-            if (folderMapper.getOneFolderByPathAndBucketId(sourcePath, bucketId) != null) {
+            folderMapper.updateFatherId(foldId, sourcePath);
+            if (folderMapper.getOneFolderByPath(sourcePath) != null) {
                 //文件夹
                 //1. 找出fold_path = sourcePath的folder
                 //2. 获取该folder的parent
@@ -201,16 +201,12 @@ public class IFileServiceImpl implements IFileService {
                         .setFoldId(foldId)
                         .setUpdateTime(LocalDateTime.now())
                         .setFileName(targetPath.substring(targetPath.lastIndexOf("/") + 1));
-                fileMapper.update(file, sourcePath, bucketId);
+                fileMapper.update(file, sourcePath);
             }
-            try {
-                //本地移动文件（夹）
-                Files.move(Path.of(sourcePath), Path.of(targetPath), StandardCopyOption.REPLACE_EXISTING);
-            } catch (Exception e) {
-                throw new RuntimeException("路径不存在！");
-            }
+            //本地移动文件（夹）
+            Files.move(Path.of(sourcePath), Path.of(targetPath), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
-            throw new RuntimeException("未知原因导致文件（夹）移动失败!！");
+            throw new RuntimeException();
         }
 
         return Result.ok();
@@ -246,7 +242,7 @@ public class IFileServiceImpl implements IFileService {
             File file = new File();
             String foldPath = path.substring(0, path.lastIndexOf("/"));
             String fileName = path.substring(path.lastIndexOf("/") + 1);
-            Integer foldId = folderMapper.getIdByBucketIdAndPath(bucketId, foldPath);
+            Integer foldId = folderMapper.getIdByPath(foldPath);
             file.setUpdateTime(LocalDateTime.now())
                     .setCreatTime(LocalDateTime.now())
                     .setFilePath(path)
