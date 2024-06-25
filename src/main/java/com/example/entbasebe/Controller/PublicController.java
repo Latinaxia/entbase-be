@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 @RestController
 @Slf4j
-public class UserController {
+public class PublicController {
     @Resource
     private IUserService userService;
 
@@ -45,7 +45,7 @@ public class UserController {
      * 给前端返回一个base64格式的图片，前端需要转换为图片验证码
      * @return
      */
-    @GetMapping("/get-captcha")
+    @PostMapping("/get-captcha")
     public Result ImageBase64AndID() {
         // 定义图形验证码的长和宽
         LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(200, 90, 4, 100);
