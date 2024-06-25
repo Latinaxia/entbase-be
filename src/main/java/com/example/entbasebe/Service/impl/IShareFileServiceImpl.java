@@ -41,7 +41,7 @@ public class IShareFileServiceImpl implements IShareFileService {
 
     @Override
     public Result creatShareFile(Integer bucketId, String password, String filePath) {
-        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
+        // UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
 
         //为要共享的文件生成一个唯一的共享ID，并将该ID，文件路径和密码存入数据库，设置有效期12h
         Path path = Paths.get(filePath);
@@ -87,7 +87,7 @@ public class IShareFileServiceImpl implements IShareFileService {
 
     @Override
     public Result listShareFile() {
-        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
+        // UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
 
         //获取当前用户的id
         Integer userId = UserHolder.getUser().getUserId();
@@ -116,7 +116,7 @@ public class IShareFileServiceImpl implements IShareFileService {
      */
     @Override
     public Result deleteById(String shareId) {
-        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
+        // UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
         //这里获取用户信息,只能有创建共享者删除
 
         //获取用户id
@@ -135,7 +135,7 @@ public class IShareFileServiceImpl implements IShareFileService {
      */
     @Override
     public Result getSharePathById(String shareId) {
-        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
+        // UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
 
         // 获取共享文件的路径、创建人ID和结束时间
         ShareDTO shareFile = shareFileMapper.getShareFileById(shareId);
