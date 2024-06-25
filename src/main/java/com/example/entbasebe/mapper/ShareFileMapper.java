@@ -2,10 +2,7 @@ package com.example.entbasebe.mapper;
 
 import com.example.entbasebe.DTO.ShareDTO;
 import com.example.entbasebe.DTO.ShareFileDTO;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,8 +10,9 @@ import java.util.ArrayList;
 @Mapper
 public interface ShareFileMapper {
 
+    //由于MyBatis的版本问题，在某些版本的MyBatis中，如果方法参数是基本类型或者包装类型，要用@Param注解，SQL才能引用参数。
     @Insert("insert into share (user_id, share_id, password, file_path, end_time) values (#{userId}, #{uniqueStringId}, #{password}, #{filePath}, #{endTime})")
-    void saveShareFile(Integer userId, String uniqueStringId, String password, String filePath, LocalDateTime endTime);
+    void saveShareFile(@Param("userId") Integer userId, @Param("uniqueStringId") String uniqueStringId, @Param("password") String password, @Param("filePath") String filePath, @Param("endTime") LocalDateTime endTime);
 
     @Select("select end_time from share where share_id = #{shareId}")
     LocalDateTime getEndTime(String shareId);
