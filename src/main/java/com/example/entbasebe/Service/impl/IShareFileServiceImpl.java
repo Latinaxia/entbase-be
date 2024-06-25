@@ -81,7 +81,7 @@ public class IShareFileServiceImpl implements IShareFileService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        log.info("文件的二进制：{}",fileBytes);
+        // log.info("文件的二进制：{}",fileBytes);
         return Result.ok(fileBytes);
     }
 
