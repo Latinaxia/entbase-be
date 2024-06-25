@@ -4,6 +4,7 @@ import com.example.entbasebe.DTO.PathDTO;
 import com.example.entbasebe.Service.IFileService;
 import com.example.entbasebe.Utils.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +36,7 @@ public class FileController {
     }
 
     @PostMapping("/file/get")
-    public Result getFile(@RequestBody PathDTO pathDTO){
+    public ResponseEntity<byte[]> getFile(@RequestBody PathDTO pathDTO){
         return fileService.getFile(pathDTO);
     }
 

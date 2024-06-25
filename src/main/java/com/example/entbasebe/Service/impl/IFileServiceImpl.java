@@ -14,10 +14,15 @@ import com.example.entbasebe.mapper.BucketMapper;
 import com.example.entbasebe.mapper.FileMapper;
 import com.example.entbasebe.mapper.FolderMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -111,19 +116,32 @@ public class IFileServiceImpl implements IFileService {
     }
 
     @Override
-    public Result getFile(PathDTO pathDTO) {
+    public ResponseEntity<byte[]> getFile(PathDTO pathDTO) {
         Integer bucketId = pathDTO.getBucketId();
         String path = pathDTO.getPath();
         path = folderMapper.getPathByBucketId(bucketId) + path;
         Result legal = isLegal(UserHolder.getUser(), bucketId, path);
         if (legal != null){
-            return legal;
+            return Result.fail("404","服务器错误！");
         }
+
+        //返回文件的二进制
+        java.io.File file = new java.io.File(path);
+
+        // 设置响应头
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", file.getName());
+
+        byte[] fileBytes;
         try {
-            return Result.ok(Files.readAllBytes(Path.of(path)));//FileUtil.readBytes(path)
-        } catch (Exception e) {
-            throw new RuntimeException("文件不存在或读取时发生错误！");
+            fileBytes = Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+        return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
+
     }
 
     @Override
