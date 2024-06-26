@@ -2,8 +2,10 @@ package com.example.entbasebe.Controller;
 import com.example.entbasebe.DTO.FileMoveDTO;
 import com.example.entbasebe.DTO.PathDTO;
 import com.example.entbasebe.Service.IFileService;
+import com.example.entbasebe.Service.IFolderService;
 import com.example.entbasebe.Utils.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +17,8 @@ import javax.annotation.Resource;
 @RestController
 @Slf4j
 public class FileController {
+    @Autowired
+    private IFolderService folderService;
 
     @Resource
     private IFileService fileService;
@@ -43,5 +47,12 @@ public class FileController {
     @PostMapping("/file/delete")
     public Result deleteFile(Integer bucketId, String path){
         return fileService.deleteFile(bucketId, path);
+    }
+
+    @PostMapping("/file/create-dir")
+    public Result createFolder(Integer bucketId, String path){
+
+        log.info("在桶id为:{}的桶下创建一个路径为：{}的文件夹", bucketId, path);
+        return folderService.createFolder(bucketId, path);
     }
 }
