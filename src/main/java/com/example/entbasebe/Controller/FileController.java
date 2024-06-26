@@ -17,8 +17,6 @@ import javax.annotation.Resource;
 @RestController
 @Slf4j
 public class FileController {
-    @Autowired
-    private IFolderService folderService;
 
     @Resource
     private IFileService fileService;
@@ -53,6 +51,6 @@ public class FileController {
     public Result createFolder(Integer bucketId, String path){
 
         log.info("在桶id为:{}的桶下创建一个路径为：{}的文件夹", bucketId, path);
-        return folderService.createFolder(bucketId, path);
+        return fileService.createFolder(bucketId, path);
     }
 }

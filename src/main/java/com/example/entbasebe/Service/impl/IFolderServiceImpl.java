@@ -17,46 +17,5 @@ import java.time.LocalDateTime;
 @Slf4j
 @Service
 public class IFolderServiceImpl implements IFolderService {
-    @Resource
-    private FolderMapper folderMapper;
-    @Override
-    public Result createFolder(Integer bucketId, String path) {
-        path = folderMapper.getPathByBucketId(bucketId) + path;
-        UserHolderDTO user = UserHolder.getUser();
-        if (user == null){
-            return Result.fail("未登录");
-        }
-        if (bucketId == null){
-            return Result.fail("桶ID不能为空！");
-        }
-        Integer userId = user.getUserId();
-        //在本地创建一个文件夹
-        if (folderMapper.getOneFolderByPath(path) != null){
-            return Result.fail("已存在同名文件夹");
-        }
-        Integer fatherId = folderMapper.getIdByPath(path.substring(0, path.lastIndexOf("/")));
-        //添加到数据库中（folder）
-        Folder folder = new Folder();
-        folder.setCreatTime(LocalDateTime.now())
-                .setUpdateTime(LocalDateTime.now())
-                .setFatherId(fatherId)
-                .setFoldPath(path)
-                .setFoldName(FileUtil.getName(path))
-                .setIsBucket(0)
-                .setUserId(userId);
-        try {
-            if (!new File(path).mkdir()){
-                throw new RuntimeException();
-            }
-        } catch (Exception e) {
-            return Result.fail("创建失败!");
-        }
-        try {
-            folderMapper.insertOneFolder(folder);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
 
-        return Result.ok();
-    }
 }
