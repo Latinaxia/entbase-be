@@ -8,7 +8,7 @@ import com.example.entbasebe.Utils.UserHolder;
 import com.example.entbasebe.entity.User;
 import com.example.entbasebe.mapper.ShareFileMapper;
 import com.example.entbasebe.mapper.UserMapper;
-import com.example.entbasebe.vo.vo.ShareFileVo;
+import com.example.entbasebe.vo.ShareFileVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -32,9 +32,6 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class IShareFileServiceImpl implements IShareFileService {
-
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
 
     @Resource
     private ShareFileMapper shareFileMapper;
@@ -181,6 +178,7 @@ public class IShareFileServiceImpl implements IShareFileService {
         shareFileVo.setFileName(fileName);
         shareFileVo.setUserName(user.getUserName());
         shareFileVo.setEndTime(shareFile.getEndTime());
+        shareFileVo.setShareId(shareId);
 
         return Result.ok(shareFileVo);
     }

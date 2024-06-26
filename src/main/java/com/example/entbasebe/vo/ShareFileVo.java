@@ -1,4 +1,4 @@
-package com.example.entbasebe.vo.vo;
+package com.example.entbasebe.vo;
 
 import lombok.Data;
 
@@ -11,4 +11,5 @@ public class ShareFileVo {
     private String userName;
     private LocalDateTime endTime;
     private String filePath;
+    private String shareId;
 }
