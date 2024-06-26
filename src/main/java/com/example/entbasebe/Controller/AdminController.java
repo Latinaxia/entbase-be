@@ -13,7 +13,7 @@ import java.util.Arrays;
 @RestController
 @Slf4j
 @RequestMapping("/admin")
-public class AdminController {
+public class AdminController {// www
 
     @Resource
     private IAdminService adminService;

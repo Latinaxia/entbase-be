@@ -40,7 +40,11 @@ public class IFileServiceImpl implements IFileService {
     private BucketMapper bucketMapper;
 
     @Override
-    public Result getFiles(Integer bucketId, String path) {
+    public Result getFiles(String path) {
+        //获取当前用户的id
+        Integer userId = UserHolder.getUser().getUserId();
+        Integer bucketId = bucketMapper.getBucketIdByUserId(userId);
+
         Result legal = isLegal(UserHolder.getUser(), bucketId, path);
         if (legal != null){
             return legal;

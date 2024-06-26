@@ -26,4 +26,7 @@ public interface BucketMapper {
 
     @Insert("insert into bucket (bucket_id,user_id, bucket_space, is_public) values (#{bucketId}, #{userId}, #{bucketSpace}, #{isPublic})")
     void saveBucket(Bucket bucket);
+
+    @Select("select bucket_id from bucket where user_id = #{userId}")
+    Integer getBucketIdByUserId(Integer userId);
 }

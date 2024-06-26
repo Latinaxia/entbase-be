@@ -20,9 +20,9 @@ public class FileController {
     private IFileService fileService;
 
     @PostMapping("/file/list")
-    public Result listFiles(Integer bucketId, String path){
+    public Result listFiles( String path){
 
-        return fileService.getFiles(bucketId, path);
+        return fileService.getFiles(path);
     }
 
     @PostMapping("/file/upload")
