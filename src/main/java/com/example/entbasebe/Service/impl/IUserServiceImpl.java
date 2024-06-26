@@ -232,6 +232,24 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
     }
 
     @Override
+    public Result modifyName(String newName) {
+        Integer userId = UserHolder.getUser().getUserId();
+        userMapper.modifyName(newName,userId);
+        return Result.ok("修改成功!");
+    }
+
+    @Override
+    public Result modifyPassword(String oldpwd, String newpwd) {
+        Integer userId = UserHolder.getUser().getUserId();
+        String oldPassword = userMapper.queryPassword(userId);
+        if(!oldPassword.equals(oldpwd)){
+            return Result.fail("旧密码错误!");
+        }
+        userMapper.modifyPassword(newpwd,userId);
+        return Result.ok("修改成功!");
+    }
+
+    @Override
     public Result sendmail(LoginDTO loginDTO) {
 
         //校验邮箱

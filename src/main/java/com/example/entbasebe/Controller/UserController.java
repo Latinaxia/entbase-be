@@ -30,15 +30,19 @@ public class UserController {
     }
 
 
-//    @PostMapping("/modify-name")
-//    public Result modifyName(@RequestParam("newName") String newName) {
-//        return userService.modifyName(newName);
-//    }
-//
-//    @PostMapping("/modify-pwd")
-//    public Result modifyPassword() {
-//        return userService.modifyPassword(params.get("username"), params.get("oldPassword"), params.get("newPassword"));
-//    }
+    /*
+       修改用户名
+     */
+    @PostMapping("/modify-name")
+    public Result modifyName(@RequestParam("newName") String newName) {
+        return userService.modifyName(newName);
+    }
+
+
+    @PostMapping("/modify-pwd")
+    public Result modifyPassword(@RequestParam("oldpassword") String oldpwd, @RequestParam("newpassword") String newpwd) {
+        return userService.modifyPassword(oldpwd,newpwd);
+    }
 
 
 }

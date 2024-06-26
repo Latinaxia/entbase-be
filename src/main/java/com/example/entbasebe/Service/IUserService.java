@@ -16,4 +16,8 @@ public interface IUserService {
 
 
     Result listBuckets();
+
+    Result modifyName(String newName);
+
+    Result modifyPassword(String oldpwd, String newpwd);
 }
