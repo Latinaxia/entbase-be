@@ -197,6 +197,29 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         return codeId;
     }
 
+
+    @Override
+    public Result listBuckets() {
+
+//        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
+        //获取当前用户的id
+        Integer userId = UserHolder.getUser().getUserId();
+
+        //判断是否是管理员
+        String isAdmin = UserHolder.getUser().getIsAdmin();
+        List<BucketsDTO> buckets = new ArrayList<>();
+        if(isAdmin.equals("0")){
+            buckets = userMapper.listBuckets(userId);
+        }
+        else{
+            buckets = userMapper.listAllBuckets();
+        }
+
+        log.info("用户可见的存储桶信息：{}",buckets);
+
+        return Result.ok(buckets);
+    }
+
     @Override
     public Result sendmail(LoginDTO loginDTO) {
 
@@ -225,46 +248,6 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         //返回结果
         return Result.ok("验证码已发送至邮箱！请注意查收");
     }
-
-    @Override
-    public Result listBuckets() {
-
-//        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
-        //获取当前用户的id
-        Integer userId = UserHolder.getUser().getUserId();
-
-        //判断是否是管理员
-        String isAdmin = UserHolder.getUser().getIsAdmin();
-        List<BucketsDTO> buckets = new ArrayList<>();
-        if(isAdmin.equals("0")){
-            buckets = userMapper.listBuckets(userId);
-        }
-        else{
-            buckets = userMapper.listAllBuckets();
-        }
-//        //查询该user的所有bucket(个人存储桶和共享存储桶）,将bucketIds保存下来;
-//        List<Integer> bucketIds = userMapper.listBucketIds(userId);
-//        log.info("用户可见桶的bucket_id：{},长度为：{}",bucketIds,bucketIds.size());
-
-//        for (Integer bucketId : bucketIds) {
-//            try {
-//                BucketsDTO bucketsDTO = userMapper.getBucket(bucketId);
-//                if (bucketsDTO != null) {
-//                    buckets.add(bucketsDTO);
-//                    log.info("{}", bucketsDTO);
-//                } else {
-//                    log.warn("Bucket with ID {} not found", bucketId);
-//                }
-//            } catch (IndexOutOfBoundsException e) {
-//                log.error("Index out of bounds for bucket ID {}", bucketId, e);
-//            }
-//        }
-
-        log.info("用户可见的存储桶信息：{}",buckets);
-
-        return Result.ok(buckets);
-    }
-
 
     private void SendMailCode(String email, String code) {
         SimpleMailMessage message = new SimpleMailMessage();
