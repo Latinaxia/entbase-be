@@ -100,10 +100,25 @@ public class IShareFileServiceImpl implements IShareFileService {
 
         //获取当前用户的id
         Integer userId = UserHolder.getUser().getUserId();
-        //根据用户id查询该用户的所有共享文件(文件名暂时空着）
-        ArrayList<ShareFileDTO> shareFileDTOS = shareFileMapper.listShareFile(userId);
 
-        //根据文件路径获取文件名,填充
+        //判断是否为管理员，管理员的话可以查看所有共享文件
+        String isAdmin = UserHolder.getUser().getIsAdmin();
+        if(isAdmin.equals("1")){
+            //管理员可以查看所有共享文件
+            ArrayList<ShareFileDTO> shareFileDTOS = shareFileMapper.listAllShareFile();
+            //根据文件路径获取文件名,填充
+            return getShareFileDTOS(shareFileDTOS);
+        }
+        else{
+            //根据用户id查询该用户的所有共享文件(文件名暂时空着）
+            ArrayList<ShareFileDTO> shareFileDTOS = shareFileMapper.listShareFile(userId);
+            //根据文件路径获取文件名,填充
+            return getShareFileDTOS(shareFileDTOS);
+        }
+
+    }
+
+    private Result getShareFileDTOS(ArrayList<ShareFileDTO> shareFileDTOS) {
         for(ShareFileDTO x :shareFileDTOS){
             String filePath = x.getFilePath();
             String fileName = shareFileMapper.getFileName(filePath);
@@ -113,8 +128,6 @@ public class IShareFileServiceImpl implements IShareFileService {
             LocalDateTime startTime = endTime.minusHours(12);
             x.setStartTime(startTime);
         }
-
-        //返回文件名，分享时间，截止日期
         return Result.ok(shareFileDTOS);
     }
 

@@ -42,4 +42,7 @@ public interface ShareFileMapper {
      */
     @Select("select user_id,end_time,file_path from share where share_id=#{shareId}")
     ShareDTO getShareFileById(String shareId);
+
+    @Select("select share_id, file_path, end_time from share")
+    ArrayList<ShareFileDTO> listAllShareFile();
 }
