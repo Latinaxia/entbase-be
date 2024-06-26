@@ -129,6 +129,7 @@ public class IFileServiceImpl implements IFileService {
     @Override
     @Transactional
     public Result moveFile(FileMoveDTO fileMoveDTO) {
+        log.info("开始移动文件: {}", fileMoveDTO);
         Integer bucketId = fileMoveDTO.getBucketId();
         String sourcePath = fileMoveDTO.getSourcePath();
         String targetPath = fileMoveDTO.getTargetPath();
@@ -143,8 +144,11 @@ public class IFileServiceImpl implements IFileService {
             //处理数据库
             //获取targetPath的parent部分
             String tParent = targetPath.substring(0, targetPath.lastIndexOf("/"));
+            log.info("目标路径targetPath为：" + targetPath);
+            log.info("目标路径的父级路径tParent为：" + tParent);
             //根据parent获取foldId
             Integer foldId = folderMapper.getIdByBucketIdAndPath(bucketId, tParent);
+            log.info("获取到的foldId为：" + foldId);
             //10. 修改fold_path = sourcePath的文件夹的fatherId = foldId
             folderMapper.updateFatherId(foldId, bucketId, sourcePath);
             if (folderMapper.getOneFolderByPathAndBucketId(sourcePath, bucketId) != null) {
@@ -187,14 +191,17 @@ public class IFileServiceImpl implements IFileService {
             }
             try {
                 //本地移动文件（夹）
+                log.info("移动文件夹从 {} 到 {}", sourcePath, targetPath);
                 Files.move(Path.of(sourcePath), Path.of(targetPath), StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception e) {
+                log.error("移动文件夹从 {} 到 {}失败", sourcePath, targetPath, e);
                 throw new RuntimeException("路径不存在！");
             }
         } catch (Exception e) {
+            log.error("移动文件 {} 到 {} 失败！", sourcePath, targetPath);
             throw new RuntimeException("未知原因导致文件（夹）移动失败!！");
         }
-
+        log.info("成功移动文件: {}", fileMoveDTO);
         return Result.ok();
     }
 
