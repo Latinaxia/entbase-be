@@ -35,7 +35,6 @@ public class IShareFileServiceImpl implements IShareFileService {
 
     @Resource
     private ShareFileMapper shareFileMapper;
-
     @Resource
     private UserMapper userMapper;
 
