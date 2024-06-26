@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface IFileService {
 
-    Result getFiles(String path);
+    Result getFiles(Integer bucketUd, String path);
 
     Result deleteFile(Integer bucketId, String path);
 

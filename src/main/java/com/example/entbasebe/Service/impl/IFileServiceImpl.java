@@ -40,10 +40,14 @@ public class IFileServiceImpl implements IFileService {
     private BucketMapper bucketMapper;
 
     @Override
-    public Result getFiles(String path) {
-        //获取当前用户的id
-        Integer userId = UserHolder.getUser().getUserId();
-        Integer bucketId = bucketMapper.getBucketIdByUserId(userId);
+    public Result getFiles(Integer bucketId,String path) {
+
+        //如果没有传入bucketId，就根据用户id查bucketId
+        if(bucketId == null) {
+            //获取当前用户的id
+            Integer userId = UserHolder.getUser().getUserId();
+            bucketId = bucketMapper.getBucketIdByUserId(userId);
+        }
 
         Result legal = isLegal(UserHolder.getUser(), bucketId, path);
         if (legal != null){
@@ -95,6 +99,12 @@ public class IFileServiceImpl implements IFileService {
     @Override
     @Transactional
     public Result deleteFile(Integer bucketId, String path) {
+        //如果没有传入bucketId，就根据用户id查bucketId
+        if(bucketId == null) {
+            //获取当前用户的id
+            Integer userId = UserHolder.getUser().getUserId();
+            bucketId = bucketMapper.getBucketIdByUserId(userId);
+        }
         path = folderMapper.getPathByBucketId(bucketId) + path;
         Result legal = isLegal(UserHolder.getUser(), bucketId, path);
         if (legal != null){
@@ -122,6 +132,12 @@ public class IFileServiceImpl implements IFileService {
     @Override
     public ResponseEntity<byte[]> getFile(PathDTO pathDTO) {
         Integer bucketId = pathDTO.getBucketId();
+        //如果没有传入bucketId，就根据用户id查bucketId
+        if(bucketId == null) {
+            //获取当前用户的id
+            Integer userId = UserHolder.getUser().getUserId();
+            bucketId = bucketMapper.getBucketIdByUserId(userId);
+        }
         String path = pathDTO.getPath();
         path = folderMapper.getPathByBucketId(bucketId) + path;
         Result legal = isLegal(UserHolder.getUser(), bucketId, path);
@@ -152,6 +168,12 @@ public class IFileServiceImpl implements IFileService {
     @Transactional
     public Result moveFile(FileMoveDTO fileMoveDTO) {
         Integer bucketId = fileMoveDTO.getBucketId();
+        //如果没有传入bucketId，就根据用户id查bucketId
+        if(bucketId == null) {
+            //获取当前用户的id
+            Integer userId = UserHolder.getUser().getUserId();
+            bucketId = bucketMapper.getBucketIdByUserId(userId);
+        }
         String sourcePath = fileMoveDTO.getSourcePath();
         String targetPath = fileMoveDTO.getTargetPath();
         sourcePath = folderMapper.getPathByBucketId(bucketId) + sourcePath;
@@ -219,6 +241,14 @@ public class IFileServiceImpl implements IFileService {
     @Override
     @Transactional
     public Result uploadFile(String path, Integer bucketId, MultipartFile multipartFile) {
+
+        //如果没有传入bucketId，就根据用户id查bucketId
+        if(bucketId == null) {
+            //获取当前用户的id
+            Integer userId = UserHolder.getUser().getUserId();
+            bucketId = bucketMapper.getBucketIdByUserId(userId);
+        }
+
         path = folderMapper.getPathByBucketId(bucketId) + path;
         UserHolderDTO user = UserHolder.getUser();
         Result legal = isLegal(user, bucketId, path);
@@ -266,6 +296,12 @@ public class IFileServiceImpl implements IFileService {
 
     @Override
     public Result createFolder(Integer bucketId, String path) {
+        //如果没有传入bucketId，就根据用户id查bucketId
+        if(bucketId == null) {
+            //获取当前用户的id
+            Integer userId = UserHolder.getUser().getUserId();
+            bucketId = bucketMapper.getBucketIdByUserId(userId);
+        }
         path = folderMapper.getPathByBucketId(bucketId) + path;
         UserHolderDTO user = UserHolder.getUser();
         if (user == null){

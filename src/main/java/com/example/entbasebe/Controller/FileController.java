@@ -22,9 +22,9 @@ public class FileController {
     private IFileService fileService;
 
     @PostMapping("/file/list")
-    public Result listFiles( String path){
+    public Result listFiles(Integer bucketId, String path){
 
-        return fileService.getFiles(path);
+        return fileService.getFiles(bucketId, path);
     }
 
     @PostMapping("/file/upload")
