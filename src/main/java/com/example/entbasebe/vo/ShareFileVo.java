@@ -17,4 +17,5 @@ public class ShareFileVo {
     private String filePath;
 
     private String shareId;
+
 }

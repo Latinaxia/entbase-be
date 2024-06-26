@@ -178,7 +178,6 @@ public class IShareFileServiceImpl implements IShareFileService {
         shareFileVo.setUserName(user.getUserName());
         shareFileVo.setEndTime(shareFile.getEndTime());
         shareFileVo.setShareId(shareId);
-
         return Result.ok(shareFileVo);
     }
 
