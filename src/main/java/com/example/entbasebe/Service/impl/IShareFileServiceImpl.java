@@ -2,7 +2,6 @@ package com.example.entbasebe.Service.impl;
 
 import com.example.entbasebe.DTO.ShareDTO;
 import com.example.entbasebe.DTO.ShareFileDTO;
-import com.example.entbasebe.DTO.UserHolderDTO;
 import com.example.entbasebe.Service.IShareFileService;
 import com.example.entbasebe.Utils.Result;
 import com.example.entbasebe.Utils.UserHolder;
@@ -13,6 +12,10 @@ import com.example.entbasebe.vo.vo.ShareFileVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -58,23 +61,29 @@ public class IShareFileServiceImpl implements IShareFileService {
     }
 
     @Override
-    public Result getShareFile(String shareId, String pwd) {
+    public ResponseEntity<byte[]> getShareFile(String shareId, String pwd) {
 
         //先判断链接有没有过期
         LocalDateTime endTime = shareFileMapper.getEndTime(shareId);
         if(endTime.isBefore(LocalDateTime.now())){
-            return Result.fail("分享链接已过期！");
+            return Result.fail("404","分享链接已过期！");
         }
 
         //再判断密码是否正确
         String filePath = shareFileMapper.getFilePath(shareId,pwd);
         log.info("获取的共享文件路径是：{},该共享文件的密码是：{}", filePath, pwd);
         if (filePath == null) {
-            return Result.fail("密码错误");
+            return Result.fail("404","密码错误");
         }
-
+        
         //返回文件的二进制
         File file = new File(filePath);
+
+        // 设置响应头
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", file.getName());
+        
         byte[] fileBytes;
         try {
             fileBytes = Files.readAllBytes(file.toPath());
@@ -82,7 +91,7 @@ public class IShareFileServiceImpl implements IShareFileService {
             throw new RuntimeException(e);
         }
         // log.info("文件的二进制：{}",fileBytes);
-        return Result.ok(fileBytes);
+        return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
     }
 
     @Override

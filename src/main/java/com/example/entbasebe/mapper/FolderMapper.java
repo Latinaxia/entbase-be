@@ -27,17 +27,17 @@ public interface FolderMapper {
 
     List<Folder> getFolderByPath(@Param("path") String path);
 
-    int deleteFolderByIdAndPath(@Param("bucketId")Integer bucketId, @Param("path")String path);
+    int deleteByPath(@Param("path")String path);
 
-    Integer getIdByBucketIdAndPath(@Param("bucketId")Integer bucketId, @Param("path")String parent);
+    Integer getIdByPath(@Param("path")String parent);
 
     void insertOneFolder(Folder folder);
 
     void updateFolderPathAndTime(@Param("folder")Folder folder);
 
-    void updateFatherId(@Param("fatherId") Integer fatherId, @Param("bucketId") Integer bucketId, @Param("sourcePath") String sourcePath);
+    void updateFatherId(@Param("fatherId") Integer fatherId, @Param("sourcePath") String sourcePath);
 
-    Folder getOneFolderByPathAndBucketId(@Param("path")String sourcePath, @Param("bucketId")Integer bucketId);
+    Folder getOneFolderByPath(@Param("path")String sourcePath);
 
     @Select("select fold_path from entbase.folder where fold_id = #{bucketId}")
     String getPathByBucketId(Integer bucketId);

@@ -3,7 +3,9 @@ package com.example.entbasebe.Controller;
 
 import com.example.entbasebe.Service.IShareFileService;
 import com.example.entbasebe.Utils.Result;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,12 +34,13 @@ public class ShareFileController {
 
     /**
      * 获取共享文件
+     *
      * @param shareId
      * @param pwd
      * @return
      */
-    @PostMapping("/get/{shareId}")
-    public Result getShareFile(@PathVariable("shareId") String shareId,@RequestParam("password") String pwd) {
+    @GetMapping("/get/{shareId}/pwd={password}")
+    public ResponseEntity<byte[]> getShareFile(@PathVariable("shareId") String shareId, @PathVariable("password") String pwd) {
         log.info("getShareFile shareId:{},pwd:{}",shareId,pwd);
         return shareFileService.getShareFile(shareId,pwd);
     }

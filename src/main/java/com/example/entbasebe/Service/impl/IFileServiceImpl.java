@@ -14,10 +14,15 @@ import com.example.entbasebe.mapper.BucketMapper;
 import com.example.entbasebe.mapper.FileMapper;
 import com.example.entbasebe.mapper.FolderMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -100,8 +105,8 @@ public class IFileServiceImpl implements IFileService {
         }
         //在数据库删除(file & folder)
         try {
-            fileMapper.deleteByPathAndBucketId(bucketId, path);
-            folderMapper.deleteFolderByIdAndPath(bucketId, path);
+            fileMapper.deleteByPath(path);
+            folderMapper.deleteByPath(path);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -111,25 +116,37 @@ public class IFileServiceImpl implements IFileService {
     }
 
     @Override
-    public Result getFile(PathDTO pathDTO) {
+    public ResponseEntity<byte[]> getFile(PathDTO pathDTO) {
         Integer bucketId = pathDTO.getBucketId();
         String path = pathDTO.getPath();
         path = folderMapper.getPathByBucketId(bucketId) + path;
         Result legal = isLegal(UserHolder.getUser(), bucketId, path);
         if (legal != null){
-            return legal;
+            return Result.fail("404","服务器错误！");
         }
+
+        //返回文件的二进制
+        java.io.File file = new java.io.File(path);
+
+        // 设置响应头
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", file.getName());
+
+        byte[] fileBytes;
         try {
-            return Result.ok(Files.readAllBytes(Path.of(path)));//FileUtil.readBytes(path)
-        } catch (Exception e) {
-            throw new RuntimeException("文件不存在或读取时发生错误！");
+            fileBytes = Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+        return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
+
     }
 
     @Override
     @Transactional
     public Result moveFile(FileMoveDTO fileMoveDTO) {
-        log.info("开始移动文件: {}", fileMoveDTO);
         Integer bucketId = fileMoveDTO.getBucketId();
         String sourcePath = fileMoveDTO.getSourcePath();
         String targetPath = fileMoveDTO.getTargetPath();
@@ -144,14 +161,11 @@ public class IFileServiceImpl implements IFileService {
             //处理数据库
             //获取targetPath的parent部分
             String tParent = targetPath.substring(0, targetPath.lastIndexOf("/"));
-            log.info("目标路径targetPath为：" + targetPath);
-            log.info("目标路径的父级路径tParent为：" + tParent);
             //根据parent获取foldId
-            Integer foldId = folderMapper.getIdByBucketIdAndPath(bucketId, tParent);
-            log.info("获取到的foldId为：" + foldId);
+            Integer foldId = folderMapper.getIdByPath(tParent);
             //10. 修改fold_path = sourcePath的文件夹的fatherId = foldId
-            folderMapper.updateFatherId(foldId, bucketId, sourcePath);
-            if (folderMapper.getOneFolderByPathAndBucketId(sourcePath, bucketId) != null) {
+            folderMapper.updateFatherId(foldId, sourcePath);
+            if (folderMapper.getOneFolderByPath(sourcePath) != null) {
                 //文件夹
                 //1. 找出fold_path = sourcePath的folder
                 //2. 获取该folder的parent
@@ -187,21 +201,14 @@ public class IFileServiceImpl implements IFileService {
                         .setFoldId(foldId)
                         .setUpdateTime(LocalDateTime.now())
                         .setFileName(targetPath.substring(targetPath.lastIndexOf("/") + 1));
-                fileMapper.update(file, sourcePath, bucketId);
+                fileMapper.update(file, sourcePath);
             }
-            try {
-                //本地移动文件（夹）
-                log.info("移动文件夹从 {} 到 {}", sourcePath, targetPath);
-                Files.move(Path.of(sourcePath), Path.of(targetPath), StandardCopyOption.REPLACE_EXISTING);
-            } catch (Exception e) {
-                log.error("移动文件夹从 {} 到 {}失败", sourcePath, targetPath, e);
-                throw new RuntimeException("路径不存在！");
-            }
+            //本地移动文件（夹）
+            Files.move(Path.of(sourcePath), Path.of(targetPath), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
-            log.error("移动文件 {} 到 {} 失败！", sourcePath, targetPath);
-            throw new RuntimeException("未知原因导致文件（夹）移动失败!！");
+            throw new RuntimeException();
         }
-        log.info("成功移动文件: {}", fileMoveDTO);
+
         return Result.ok();
     }
 
@@ -235,7 +242,7 @@ public class IFileServiceImpl implements IFileService {
             File file = new File();
             String foldPath = path.substring(0, path.lastIndexOf("/"));
             String fileName = path.substring(path.lastIndexOf("/") + 1);
-            Integer foldId = folderMapper.getIdByBucketIdAndPath(bucketId, foldPath);
+            Integer foldId = folderMapper.getIdByPath(foldPath);
             file.setUpdateTime(LocalDateTime.now())
                     .setCreatTime(LocalDateTime.now())
                     .setFilePath(path)

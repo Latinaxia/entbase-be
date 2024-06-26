@@ -3,6 +3,7 @@ package com.example.entbasebe.Service;
 import com.example.entbasebe.DTO.FileMoveDTO;
 import com.example.entbasebe.DTO.PathDTO;
 import com.example.entbasebe.Utils.Result;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface IFileService {
@@ -11,7 +12,7 @@ public interface IFileService {
 
     Result deleteFile(Integer bucketId, String path);
 
-    Result getFile(PathDTO pathDTO);
+    ResponseEntity<byte[]> getFile(PathDTO pathDTO);
 
     Result moveFile(FileMoveDTO fileMoveDTO);
 

@@ -15,11 +15,6 @@
             update_time = #{file.UpdateTime},
             file_name = #{file.FileName}
         where file_path = #{sourcePath}
-        /*
-         and user_id = (
-            select user_id from entbase.bucket
-            where bucket_id = #{bucketId}
-            )*/
     </update>
     <update id="updateFilePathAndTime">
         update entbase.file
@@ -27,7 +22,7 @@
             update_time = #{file.UpdateTime}
         where file_id = #{file.FileId}
     </update>
-    <delete id="deleteByPathAndBucketId">
+    <delete id="deleteByPath">
         delete from entbase.file
             where file_path like concat(#{path}, '/', '%') or file_path = #{path}
     </delete>
