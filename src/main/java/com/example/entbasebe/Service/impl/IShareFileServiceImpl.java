@@ -26,7 +26,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import static java.util.Arrays.stream;
 
 
 @Service
@@ -92,7 +95,6 @@ public class IShareFileServiceImpl implements IShareFileService {
 
     @Override
     public Result listShareFile() {
-        // UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
 
         //获取当前用户的id
         Integer userId = UserHolder.getUser().getUserId();
@@ -102,29 +104,34 @@ public class IShareFileServiceImpl implements IShareFileService {
         if(isAdmin.equals("1")){
             //管理员可以查看所有共享文件
             ArrayList<ShareFileDTO> shareFileDTOS = shareFileMapper.listAllShareFile();
+
             //根据文件路径获取文件名,填充
-            return getShareFileDTOS(shareFileDTOS);
+            setFileNamesAndStartTime(shareFileDTOS);
+
+            return Result.ok(shareFileDTOS);
         }
         else{
             //根据用户id查询该用户的所有共享文件(文件名暂时空着）
             ArrayList<ShareFileDTO> shareFileDTOS = shareFileMapper.listShareFile(userId);
+
             //根据文件路径获取文件名,填充
-            return getShareFileDTOS(shareFileDTOS);
+            setFileNamesAndStartTime(shareFileDTOS);
+            return Result.ok(shareFileDTOS);
         }
 
     }
 
-    private Result getShareFileDTOS(ArrayList<ShareFileDTO> shareFileDTOS) {
-        for(ShareFileDTO x :shareFileDTOS){
+    public void setFileNamesAndStartTime(List<ShareFileDTO> shareFileDTOS) {
+        shareFileDTOS.forEach(x -> {
             String filePath = x.getFilePath();
-            String fileName = shareFileMapper.getFileName(filePath);
+            File file = new File(filePath);
+            String fileName = file.getName();
             x.setFileName(fileName);
 
             LocalDateTime endTime = x.getEndTime();
             LocalDateTime startTime = endTime.minusHours(12);
             x.setStartTime(startTime);
-        }
-        return Result.ok(shareFileDTOS);
+        });
     }
 
     /**

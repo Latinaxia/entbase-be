@@ -87,7 +87,6 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
 
         UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
         log.info("DTO{}",userDTO);
-//        UserHolder.saveUser(userDTO);
 
         //自定义Map,将所有字段的值都转为String,为jwt令牌生成做准备
         Map<String, Object> userMap = BeanUtil.beanToMap(userDTO, new HashMap<>(),
@@ -205,7 +204,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         //存入redis中，用于校验验证码,有效期10分钟
         Random random = new Random();
         String codeId = String.valueOf(1000 + random.nextInt(9000));
-        stringRedisTemplate.opsForValue().set(codeId,code,10*60, TimeUnit.SECONDS);
+        stringRedisTemplate.opsForValue().set(codeId,code,LOGIN_CODE_TTL, TimeUnit.SECONDS);
         return codeId;
     }
 

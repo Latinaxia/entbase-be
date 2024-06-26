@@ -7,12 +7,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.entbasebe.Utils.SystemConstants.LOGIN_USER_KEY;
+import static com.example.entbasebe.Utils.SystemConstants.LOGIN_USER_TTL;
+
 public class JwtUtils {
 
-    private static final String signKey = "cbc5b166f64b3e50bfeb2f8d833381735c74219de6e91e964aab948f706ca473";
-//    private static final Long expire = 43200000L;//有效期12小时
-
-    private static final Long expire = 7 * 24 * 60 * 60 * 1000L; // 有效期七天
 
     /**
      * 生成JWT令牌
@@ -25,8 +24,8 @@ public class JwtUtils {
         String jwt = Jwts.builder()
                 .addClaims(claims)
                 .addClaims(headers)
-                .signWith(SignatureAlgorithm.HS256, signKey)//signKey太短的话会报错，用长一点的字符串
-                .setExpiration(new Date(System.currentTimeMillis() + expire))
+                .signWith(SignatureAlgorithm.HS256, LOGIN_USER_KEY)//signKey太短的话会报错，用长一点的字符串
+                .setExpiration(new Date(System.currentTimeMillis() + LOGIN_USER_TTL))
                 .compact();
         return jwt;
     }
@@ -38,7 +37,7 @@ public class JwtUtils {
      */
     public static Claims parseJWT(String jwt){
         Claims claims = Jwts.parser()
-                .setSigningKey(signKey)
+                .setSigningKey(LOGIN_USER_KEY)
                 .parseClaimsJws(jwt)
                 .getBody();
 

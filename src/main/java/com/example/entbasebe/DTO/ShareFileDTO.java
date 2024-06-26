@@ -15,5 +15,5 @@ public class ShareFileDTO {
 
     String filePath;
 
-
+    String shareId;
 }
