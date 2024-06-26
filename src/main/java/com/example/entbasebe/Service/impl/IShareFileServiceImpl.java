@@ -43,7 +43,7 @@ public class IShareFileServiceImpl implements IShareFileService {
     private UserMapper userMapper;
 
     @Override
-    public Result creatShareFile(Integer bucketId, String password, String filePath) {
+    public Result creatShareFile(String password, String filePath) {
         // UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
 
         //为要共享的文件生成一个唯一的共享ID，并将该ID，文件路径和密码存入数据库，设置有效期12h

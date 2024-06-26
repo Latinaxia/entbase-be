@@ -20,16 +20,14 @@ public class ShareFileController {
 
     /**
      * 创建共享文件链接
-     * @param bucketId
      * @param password
      * @param filePath
      * @return
      */
     @PostMapping("/create")
-    public Result creatShareFile(@RequestParam("bucketId") Integer bucketId,
-                                 @RequestParam("password") String password,
+    public Result creatShareFile(@RequestParam("password") String password,
                                  @RequestParam("filePath") String filePath) {
-        return shareFileService.creatShareFile(bucketId, password,filePath);
+        return shareFileService.creatShareFile(password,filePath);
     }
 
     /**
