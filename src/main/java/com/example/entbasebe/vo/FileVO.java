@@ -14,4 +14,6 @@ public class FileVO {
     private String path;
     private String fileName;
     private Boolean isFolder;
+    private String userName;
+    private String userEmail;
 }

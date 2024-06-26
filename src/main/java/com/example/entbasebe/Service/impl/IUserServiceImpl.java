@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.entbasebe.DTO.BucketsDTO;
 import com.example.entbasebe.DTO.LoginDTO;
 import com.example.entbasebe.DTO.UserDTO;
-import com.example.entbasebe.DTO.UserHolderDTO;
 import com.example.entbasebe.Service.IUserService;
 import com.example.entbasebe.Utils.JwtUtils;
 import com.example.entbasebe.Utils.RegexUtils;
@@ -32,8 +31,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static com.example.entbasebe.Utils.SystemConstants.EMAIL_FROM;
-import static com.example.entbasebe.Utils.SystemConstants.USER_NICK_NAME_PREFIX;
+import static com.example.entbasebe.Utils.SystemConstants.*;
 
 @Slf4j
 @Service
@@ -167,6 +165,20 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         folder.setUserId(finalUser.getUserId());
         folder.setIsBucket(1);
         folderMapper.save(folder);
+        /*可以写成一个函数：initFolder(folderPath, folderPath, 1);*/
+        //为该用户创建一个文件夹用作回收站
+        String recyclePath = "./data/" + email + "/" + __RECYCLE_BIN;
+        File recycle = new File(recyclePath);
+        recycle.mkdirs();
+        log.info(__RECYCLE_BIN + "created successfully");
+
+        //将该文件夹信息存入数据库，再取出即可获得folderId
+        Folder recycleFolder = new Folder();
+        recycleFolder.setFoldName(__RECYCLE_BIN);
+        recycleFolder.setFoldPath(recyclePath);
+        recycleFolder.setUserId(finalUser.getUserId());
+        recycleFolder.setIsBucket(0);
+        folderMapper.save(recycleFolder);
 
         //将用户的bucket构建并存入数据库
         Folder finalFolder = folderMapper.getFoldByName(email);

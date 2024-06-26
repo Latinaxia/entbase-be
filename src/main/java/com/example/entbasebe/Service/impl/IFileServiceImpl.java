@@ -7,6 +7,8 @@ import com.example.entbasebe.DTO.UserHolderDTO;
 import com.example.entbasebe.Service.IFileService;
 import com.example.entbasebe.Utils.Result;
 import com.example.entbasebe.Utils.UserHolder;
+import com.example.entbasebe.entity.User;
+import com.example.entbasebe.mapper.UserMapper;
 import com.example.entbasebe.vo.FileVO;
 import com.example.entbasebe.entity.File;
 import com.example.entbasebe.entity.Folder;
@@ -38,6 +40,8 @@ public class IFileServiceImpl implements IFileService {
     private FolderMapper folderMapper;
     @Resource
     private BucketMapper bucketMapper;
+    @Resource
+    private UserMapper userMapper;
 
     @Override
     public Result getFiles(Integer bucketId,String path) {
@@ -53,6 +57,7 @@ public class IFileServiceImpl implements IFileService {
         if (legal != null){
             return legal;
         }
+
         path = folderMapper.getPathByBucketId(bucketId) + (path.equals("/") ? "" : path);
         //获取所有以path开头的文件和文件夹
         List<com.example.entbasebe.entity.File> fileList = fileMapper.getFileByPath(path);
@@ -64,13 +69,17 @@ public class IFileServiceImpl implements IFileService {
             int lastIndexOf = foldPath.lastIndexOf("/");
             String fatherPath = foldPath.substring(0, lastIndexOf);
             if (Objects.equals(fatherPath, path)){
+                Integer userId = folder.getUserId();
+                User user = userMapper.getUserById(userId);
                 FileVO fileVO = FileVO.builder()
                         .path(folder.getFoldPath())
-                        .userId(folder.getUserId())
+                        .userId(userId)
                         .fileName(folder.getFoldName())
                         .createTime(folder.getCreatTime())
                         .updateTime(folder.getUpdateTime())
                         .isFolder(true)
+                        .userName(user.getUserName())
+                        .userEmail(user.getUserEmail())
                         .build();
                 fileVOList.add(fileVO);
             }
@@ -81,13 +90,17 @@ public class IFileServiceImpl implements IFileService {
             int lastIndexOf = filePath.lastIndexOf("/");
             String fatherPath = filePath.substring(0, lastIndexOf);
             if (Objects.equals(fatherPath, path)){
+                Integer userId = file.getUserId();
+                User user = userMapper.getUserById(userId);
                 FileVO fileVO = FileVO.builder()
-                        .userId(file.getUserId())
+                        .userId(userId)
                         .fileName(file.getFileName())
                         .createTime(file.getCreatTime())
                         .updateTime(file.getUpdateTime())
                         .path(file.getFilePath())
                         .isFolder(false)
+                        .userName(user.getUserName())
+                        .userEmail(user.getUserEmail())
                         .build();
                 fileVOList.add(fileVO);
             }
@@ -370,7 +383,7 @@ public class IFileServiceImpl implements IFileService {
     }
 
 
-    //判断用户话参数是否合法
+    //判断用户参数是否合法
     private Result isLegal(UserHolderDTO user, Integer bucketId, String... path) {
         if (user == null){
             return Result.fail("未登录");
