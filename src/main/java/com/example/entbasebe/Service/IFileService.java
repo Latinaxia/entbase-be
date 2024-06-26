@@ -19,4 +19,6 @@ public interface IFileService {
     Result uploadFile(String path, Integer bucketId, MultipartFile file);
 
     Result createFolder(Integer bucketId, String path);
+
+    Result getSpace(Integer bucketId);
 }

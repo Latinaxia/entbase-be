@@ -53,4 +53,8 @@ public class FileController {
         log.info("在桶id为:{}的桶下创建一个路径为：{}的文件夹", bucketId, path);
         return fileService.createFolder(bucketId, path);
     }
+    @PostMapping("/file/space")
+    public Result getSpace(Integer bucketId){
+        return fileService.getSpace(bucketId);
+    }
 }

@@ -2,6 +2,7 @@ package com.example.entbasebe.mapper;
 import com.example.entbasebe.entity.File;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -18,4 +19,7 @@ public interface FileMapper {
     void update(@Param("file") File file, @Param("sourcePath") String sourcePath);
 
     void updateFilePathAndTime(@Param("file") File file);
+
+    @Select("select bucket_space from bucket where bucket_id = #{bucketId}")
+    Integer getSpaceByBucketId(Integer bucketId);
 }

@@ -341,6 +341,35 @@ public class IFileServiceImpl implements IFileService {
         return Result.ok();
     }
 
+    @Override
+    public Result getSpace(Integer bucketId){
+        try {
+            log.info("开始获取空间大小");
+            //如果没有传入bucketId，就根据用户id查bucketId
+            if(bucketId == null) {
+                log.info("bucketId为空，根据用户id查找bucketId");
+                //获取当前用户的id
+                Integer userId = UserHolder.getUser().getUserId();
+                bucketId = bucketMapper.getBucketIdByUserId(userId);
+                if(bucketId == null) {
+                    log.error("无法找到用户的bucketId");
+                    return Result.fail("无法找到用户的bucketId");
+                }
+            }
+            Integer space = fileMapper.getSpaceByBucketId(bucketId);
+            if(space == null) {
+                log.error("无法获取bucket的空间大小");
+                return Result.fail("无法获取bucket的空间大小");
+            }
+            log.info("成功获取空间大小");
+            return Result.ok(space);
+        } catch (Exception e) {
+            log.error("获取空间大小时出现异常", e);
+            return Result.fail("获取空间大小时出现异常");
+        }
+    }
+
+
     //判断用户话参数是否合法
     private Result isLegal(UserHolderDTO user, Integer bucketId, String... path) {
         if (user == null){
