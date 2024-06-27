@@ -4,6 +4,7 @@ import com.example.entbasebe.DTO.UserDTO;
 import com.example.entbasebe.DTO.UsersListDTO;
 import com.example.entbasebe.Service.IAdminService;
 import com.example.entbasebe.Utils.Result;
+import com.example.entbasebe.Utils.UserHolder;
 import com.example.entbasebe.entity.Bucket;
 import com.example.entbasebe.entity.Folder;
 import com.example.entbasebe.mapper.AdminMapper;
@@ -71,23 +72,21 @@ public class IAdminServiceImpl implements IAdminService {
         File bucketFolder = new File(bucketPath);
         if (!bucketFolder.exists()) {
             bucketFolder.mkdirs();
-            log.info("Public Bucket created successfully.");
+            log.info("创建共享bucket");
         }
 
         //将该文件夹信息存入数据库，再取出即可获得folderId
         Folder folder = new Folder();
         folder.setFoldName(bucketName);
         folder.setFoldPath(bucketPath);
-        //TODO 全部写完的时候改这里
-        folder.setUserId(8);//管理员user_id,这里因为是管理员创建的，所以直接写死了，管理员是唯一的
+        folder.setUserId(UserHolder.getUser().getUserId());//管理员user_id,这里因为是管理员创建的，所以直接写死了，管理员是唯一的
         folder.setIsBucket(1);
         folderMapper.save(folder);
 
         //将共享的bucket构建并存入数据库
         Folder finalFolder = folderMapper.getFoldByName(bucketName);
         Bucket bucket = new Bucket();
-        //TODO 全部写完的时候改这里
-        bucket.setUserId(8);
+        bucket.setUserId(UserHolder.getUser().getUserId());
         bucket.setBucketId(finalFolder.getFoldId());
         bucket.setIsPublic("1");//设置为共享bucket
         bucket.setBucketSpace(2048);
