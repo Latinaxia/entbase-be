@@ -55,6 +55,9 @@ public class IAdminServiceImpl implements IAdminService {
         adminMapper.deleteFileByUserId(userId);
         adminMapper.deleteFoldByUserId(userId);
 
+        //删除share表中的共享文件
+        adminMapper.deleteShareByUserId(userId);
+
         //3.再删除该用户的bucket
         adminMapper.deleteBucketByUserId(userId);
 

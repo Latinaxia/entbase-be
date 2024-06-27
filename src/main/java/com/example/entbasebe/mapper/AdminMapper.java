@@ -28,4 +28,7 @@ public interface AdminMapper {
 
     @Select("select * from user")
     List<UsersListDTO> listUsers();
+
+    @Delete("delete from share where user_id = #{userId}")
+    void deleteShareByUserId(Integer userId);
 }
