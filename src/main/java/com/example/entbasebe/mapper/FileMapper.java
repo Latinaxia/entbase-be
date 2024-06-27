@@ -12,7 +12,7 @@ public interface FileMapper {
 
     int deleteByPath(@Param("path")String path);
 
-    File getOneFileByPathAndBucketId(@Param("path")String sourcePath, @Param("bucketId")Integer bucketId);
+    File getOneFileByPath(@Param("path")String sourcePath);
 
     void insert(File file);
 

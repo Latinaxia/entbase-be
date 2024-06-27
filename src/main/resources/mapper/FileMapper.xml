@@ -31,7 +31,7 @@
         where file_path like concat(#{path}, '%')
         order by creat_time
     </select>
-    <select id="getOneFileByPathAndBucketId" resultType="com.example.entbasebe.entity.File">
+    <select id="getOneFileByPath" resultType="com.example.entbasebe.entity.File">
         select * from entbase.file
         where file_path = #{path}
     </select>
