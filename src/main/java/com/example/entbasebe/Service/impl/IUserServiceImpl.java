@@ -159,7 +159,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         User finalUser = query().eq("user_email",email).one();
 
         //为该用户创建一个文件夹用于存储该用户的所有文件
-        String folderPath = "./data/" + email;
+        String folderPath = "."+File.separator+"data" + File.separator + email;
         File directory = new File(folderPath);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -175,7 +175,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         folderMapper.save(folder);
         /*可以写成一个函数：initFolder(folderPath, folderPath, 1);*/
         //为该用户创建一个文件夹用作回收站
-        String recyclePath = "./data/" + email + "/" + __RECYCLE_BIN;
+        String recyclePath = "."+File.separator+"data" + File.separator + email + File.separator + __RECYCLE_BIN;
         File recycle = new File(recyclePath);
         recycle.mkdirs();
         log.info(__RECYCLE_BIN + "created successfully");
@@ -278,7 +278,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
                 e.printStackTrace();
             }
         }
-        return Result.fail("404","头像不存在!");
+        return Result.fail("400","头像不存在!");
     }
 
     @Override

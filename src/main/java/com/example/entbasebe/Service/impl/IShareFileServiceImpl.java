@@ -65,14 +65,14 @@ public class IShareFileServiceImpl implements IShareFileService {
         //先判断链接有没有过期
         LocalDateTime endTime = shareFileMapper.getEndTime(shareId);
         if(endTime.isBefore(LocalDateTime.now())){
-            return Result.fail("404","分享链接已过期！");
+            return Result.fail("400","分享链接已过期！");
         }
 
         //再判断密码是否正确
         String filePath = shareFileMapper.getFilePath(shareId,pwd);
         log.info("获取的共享文件路径是：{},该共享文件的密码是：{}", filePath, pwd);
         if (filePath == null) {
-            return Result.fail("404","密码错误");
+            return Result.fail("400","密码错误");
         }
         
         //返回文件的二进制

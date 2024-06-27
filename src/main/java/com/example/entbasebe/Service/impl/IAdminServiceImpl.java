@@ -67,7 +67,7 @@ public class IAdminServiceImpl implements IAdminService {
     @Override
     public Result createPublicBucket(String bucketName) {
         //1.创建bucket文件夹
-        String bucketPath = "./data/" + bucketName;
+        String bucketPath = "."+File.separator+"data" + File.separator + bucketName;
         File bucketFolder = new File(bucketPath);
         if (!bucketFolder.exists()) {
             bucketFolder.mkdirs();
@@ -113,7 +113,7 @@ public class IAdminServiceImpl implements IAdminService {
                 System.out.println("文件夹名称修改成功");
             }
         }
-        String newBucketPath = folder.getParent() + "/" + bucketName;
+        String newBucketPath = folder.getParent() + File.separator + bucketName;
         log.info("新的bucket路径：{}", newBucketPath);
 
         //更新bucket表中的路径
