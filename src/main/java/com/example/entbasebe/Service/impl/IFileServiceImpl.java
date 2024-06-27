@@ -27,7 +27,6 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -196,6 +195,11 @@ public class IFileServiceImpl implements IFileService {
         if (legal != null){
             return legal;
         }
+        //如果targetPath已经存在，则拒绝移动
+        if (fileMapper.getOneFileByPath(targetPath) != null ||
+                folderMapper.getOneFolderByPath(targetPath) != null){
+            return Result.fail("目标路径已存在！");
+        }
         try {
             //处理数据库
             //获取targetPath的parent部分
@@ -243,7 +247,7 @@ public class IFileServiceImpl implements IFileService {
                 fileMapper.update(file, sourcePath);
             }
             //本地移动文件（夹）
-            Files.move(Path.of(sourcePath), Path.of(targetPath), StandardCopyOption.REPLACE_EXISTING);
+            Files.move(Path.of(sourcePath), Path.of(targetPath));
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -271,7 +275,7 @@ public class IFileServiceImpl implements IFileService {
         if (multipartFile.isEmpty()) {
             return Result.fail("上传的文件不能为空！");
         }
-        if(fileMapper.getOneFileByPathAndBucketId(path, bucketId) != null){
+        if(fileMapper.getOneFileByPath(path) != null){
             return Result.fail("已存在同名文件");
         }
         Integer userId = user.getUserId();
