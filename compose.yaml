@@ -15,7 +15,8 @@ services:
       - ./data:/app/data
     restart: always
     labels:
-      - traefik.http.routers.entbase-be.rule=Host(`entbase.dev.mofu.app`) && PathPrefix(`/api`) 
+      - traefik.http.routers.entbase-be.rule=Host(`entbase.dev.mofu.app`) && PathPrefix(`/api`)
+      - traefik.http.middlewares.entbase-be.stripprefix.prefixes=/api
 
   mysql:
     image: mysql:8
