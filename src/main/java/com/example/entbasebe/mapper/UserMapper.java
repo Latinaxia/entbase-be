@@ -2,7 +2,6 @@ package com.example.entbasebe.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.entbasebe.DTO.BucketsDTO;
-import com.example.entbasebe.Utils.Result;
 import com.example.entbasebe.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -48,4 +47,10 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Update("update user set user_password = #{newpwd} where user_id = #{userId}")
     void modifyPassword(String newpwd, Integer userId);
+
+    @Update("update user set icon = #{icon} where user_id = #{userId}")
+    void saveIcon(Integer userId, String icon);
+
+    @Select("select icon from user where user_id = #{userId}")
+    String queryIcon(String userId);
 }

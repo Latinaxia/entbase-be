@@ -19,15 +19,23 @@ import com.example.entbasebe.mapper.FolderMapper;
 import com.example.entbasebe.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -59,6 +67,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         if(RegexUtils.isEmailInvalid(email)){
             return Result.fail("邮箱格式不正确!");
         }
+
 
         //判断用户是否存在
         User user = query().eq("user_email",email).one();
@@ -247,6 +256,55 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         }
         userMapper.modifyPassword(newpwd,userId);
         return Result.ok("修改成功!");
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getAvatar(String userId) {
+        //根据userId获取头像存储路径
+        String icon = userMapper.queryIcon(userId);
+        //根据路径读取头像文件
+        File file = new File(icon);
+        log.info("头像路径：{}",icon);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDisposition(ContentDisposition.parse(file.getName()));
+
+        if(file.exists()){
+            try {
+                byte[] IconBytes = Files.readAllBytes(file.toPath());
+                return new ResponseEntity<>(IconBytes, headers, HttpStatus.OK);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return Result.fail("404","头像不存在!");
+    }
+
+    @Override
+    @Transactional
+    public Result uploadAvatar(MultipartFile newIcon) {
+
+        if (newIcon.isEmpty()) {
+            return Result.fail("上传失败，请选择文件");
+        }
+
+        Integer userId = UserHolder.getUser().getUserId();
+        String fileName = UUID.randomUUID() + "_" + newIcon.getOriginalFilename();
+        String icon = "." + File.separator + "data" + File.separator + __AVATAR + File.separator + fileName;
+        Path path = Paths.get(icon);
+        try {
+            Files.copy(newIcon.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            userMapper.saveIcon(userId,icon);
+        } catch (IOException e) {
+            // 处理 IOException
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            // 处理 SecurityException
+            e.printStackTrace();
+        }
+
+        return Result.ok("上传头像成功!");
     }
 
     @Override

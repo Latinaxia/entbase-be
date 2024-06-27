@@ -25,6 +25,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/register")
                 .excludePathPatterns("/get-captcha")
                 .excludePathPatterns("/get-email-code")
-                .excludePathPatterns("/share/get/{shareId}");
+                .excludePathPatterns("/share/get/{shareId}")
+                .excludePathPatterns("/user/avatar/get/userId={userId}");
     }
 }

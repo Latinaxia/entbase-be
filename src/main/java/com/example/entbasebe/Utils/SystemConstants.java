@@ -29,4 +29,7 @@ public class SystemConstants {
     //发送邮箱的邮箱地址，各位请自行修改
     public static final String EMAIL_FROM = "3276327856@qq.com";
     public static final String __RECYCLE_BIN = "__RECYCLE_BIN";
+
+    //存储用户头像的目录
+    public static final String __AVATAR = "__AVATAR";
 }

@@ -6,7 +6,9 @@ import com.example.entbasebe.Service.IUserService;
 import com.example.entbasebe.Utils.Result;
 import com.example.entbasebe.entity.ImageCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -41,8 +43,17 @@ public class UserController {
 
     @PostMapping("/modify-pwd")
     public Result modifyPassword(@RequestParam("oldpassword") String oldpwd, @RequestParam("newpassword") String newpwd) {
-        return userService.modifyPassword(oldpwd,newpwd);
+        return userService.modifyPassword(oldpwd, newpwd);
     }
 
+    @GetMapping("/avatar/get/userId={userId}")
+    public ResponseEntity<byte[]> getAvatar(@PathVariable("userId") String userId) {
+        return userService.getAvatar(userId);
+    }
+
+    @PostMapping("/avatar/upload")
+    public Result uploadAvatar(@RequestParam("newIcon") MultipartFile newIcon) {
+        return userService.uploadAvatar(newIcon);
+    }
 
 }
