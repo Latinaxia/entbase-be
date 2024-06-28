@@ -60,6 +60,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
     @Resource
     private JavaMailSender mailSender;
 
+
     @Override
     public Result login(LoginDTO loginDTO, HttpSession session) {
         //校验邮箱
@@ -148,8 +149,8 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         //用户名随机生成
         newUser.setUserName(USER_NICK_NAME_PREFIX + RandomUtil.randomString(6));
         //注册时默认头像为空
-        String icon = "." + File.separator + "epoch.jpg";
-        newUser.setIcon(icon);
+//        String icon = "." + File.separator + "epoch.jpg";
+        newUser.setIcon("icon");
         //注册用户不为管理员，isadmin设为0
         newUser.setIsAdmin("0");
         //先存入数据库中，为该用户生自动生成UserId
@@ -160,7 +161,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         User finalUser = query().eq("user_email",email).one();
 
         //为该用户创建一个文件夹用于存储该用户的所有文件
-        String folderPath = "."+File.separator+"data" + File.separator + email;
+        String folderPath = "."+File.separator+ "data" + File.separator + email;
         File directory = new File(folderPath);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -291,6 +292,16 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
 
         if (newIcon.isEmpty()) {
             return Result.fail("上传失败，请选择文件");
+        }
+
+        String directoryPath = "." + File.separator + "data" + File.separator + __AVATAR;
+        File directory = new File(directoryPath);
+
+        if (!directory.exists()) {
+            boolean created = directory.mkdirs();
+            if (created) {
+                System.out.println("Directory created successfully.");
+            }
         }
 
         Integer userId = UserHolder.getUser().getUserId();
