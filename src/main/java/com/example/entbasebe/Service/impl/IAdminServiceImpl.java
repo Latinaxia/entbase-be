@@ -151,7 +151,6 @@ public class IAdminServiceImpl implements IAdminService {
 
         //在数据库中删除bucket信息
         bucketMapper.deleteBucketById(bucketId);
-        folderMapper.deleteRecycleBinFolderById(bucketId);
         folderMapper.deleteFolderById(bucketId);
 
         return Result.ok("删除成功！");
