@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -174,6 +175,8 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         folder.setFoldPath(folderPath);
         folder.setUserId(finalUser.getUserId());
         folder.setIsBucket(1);
+        folder.setCreatTime(LocalDateTime.now());
+        folder.setUpdateTime(LocalDateTime.now());
         folderMapper.save(folder);
         /*可以写成一个函数：initFolder(folderPath, folderPath, 1);*/
         //为该用户创建一个文件夹用作回收站
