@@ -22,7 +22,7 @@ public interface FolderMapper {
     @Delete("delete from entbase.folder where fold_id = #{bucketId}")
     void deleteFolderById(Integer bucketId);
 
-    @Delete("DELETE FROM entbase.folder WHERE fold_path = (SELECT CONCAT(fold_path, '/__RECYCLE_BIN') FROM entbase.folder WHERE fold_id = #{bucketId})")
+    @Delete("DELETE FROM entbase.folder WHERE fold_path = (SELECT CONCAT(fold_path, '/_RECYCLE_BIN') FROM entbase.folder WHERE fold_id = #{bucketId})")
     void deleteRecycleBinFolderById(Integer bucketId);
 
 
