@@ -210,18 +210,15 @@ public class IFileServiceImpl implements IFileService {
             folderMapper.updateFatherId(foldId, sourcePath);
             if (folderMapper.getOneFolderByPath(sourcePath) != null) {
                 //文件夹
-                //1. 找出fold_path = sourcePath的folder
-                //2. 获取该folder的parent
-                String sParent = sourcePath.substring(0, sourcePath.lastIndexOf("/"));
                 //3. 找出所有以sourcePath开头的文件夹
                 List<Folder> folderList = folderMapper.getFolderByPath(sourcePath);
-                //4. 采用循环，将这些文件夹的fold_path减去开头的parent得到新的path
+                //4. 采用循环，将这些文件夹的fold_path减去开头的sourcePath得到新的path
                 for (Folder fd : folderList) {
                     String foldPath = fd.getFoldPath();
-                    int index = foldPath.indexOf(sParent);
-                    String newPath = foldPath.substring(index + sParent.length());
+                    String newPath = foldPath.substring(sourcePath.length());
                     //6. 将第四步和第五步的结果进行合并得到最终path
-                    finalPath = tParent + newPath;
+//                    finalPath = tParent + newPath;
+                    finalPath = targetPath + newPath;
                     fd.setFoldPath(finalPath).setUpdateTime(LocalDateTime.now());
                     //7. 将path、time等修改存入数据库
                     folderMapper.updateFolderPathAndTime(fd);
@@ -231,12 +228,15 @@ public class IFileServiceImpl implements IFileService {
                 //9. 执行第4、5、6、7步
                 for (File fi : fileList) {
                     String filePath = fi.getFilePath();
-                    int index = filePath.indexOf(sParent);
-                    String newPath = filePath.substring(index + sParent.length());
-                    finalPath = tParent + newPath;
+                    int index = filePath.indexOf(sourcePath);
+                    String newPath = filePath.substring(index + sourcePath.length());
+                    finalPath = targetPath + newPath;
                     fi.setFilePath(finalPath).setUpdateTime(LocalDateTime.now());
                     fileMapper.updateFilePathAndTime(fi);
                 }
+                //修改targetPath的名字
+                String foldName = targetPath.substring(targetPath.lastIndexOf("/") + 1);
+                folderMapper.updateFolderNameByPath(foldName, targetPath);
             } else {
                 //文件
                 File file = new File();

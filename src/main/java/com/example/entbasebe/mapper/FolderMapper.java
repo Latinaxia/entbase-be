@@ -41,4 +41,7 @@ public interface FolderMapper {
 
     @Select("select fold_path from entbase.folder where fold_id = #{bucketId}")
     String getPathByBucketId(Integer bucketId);
+
+    @Update("update entbase.folder set fold_name = #{foldName} where fold_path = #{targetPath}")
+    void updateFolderNameByPath(String foldName, String targetPath);
 }
