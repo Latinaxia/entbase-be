@@ -1,6 +1,5 @@
 package com.example.entbasebe.Service.impl;
 
-import com.example.entbasebe.DTO.UserDTO;
 import com.example.entbasebe.DTO.UsersListDTO;
 import com.example.entbasebe.Service.IAdminService;
 import com.example.entbasebe.Utils.Result;
@@ -19,6 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+
+import static com.example.entbasebe.Utils.SystemConstants.__RECYCLE_BIN;
 
 @Slf4j
 @Service
@@ -85,6 +86,19 @@ public class IAdminServiceImpl implements IAdminService {
         folder.setUserId(UserHolder.getUser().getUserId());//管理员user_id,这里因为是管理员创建的，所以直接写死了，管理员是唯一的
         folder.setIsBucket(1);
         folderMapper.save(folder);
+
+        String recyclePath = "."+File.separator+"data" + File.separator + bucketName + File.separator + __RECYCLE_BIN;
+        File recycle = new File(recyclePath);
+        if (recycle.mkdirs()) {
+            log.info(__RECYCLE_BIN + "created successfully");
+        }
+        //将该文件夹信息存入数据库，再取出即可获得folderId
+        Folder recycleFolder = new Folder();
+        recycleFolder.setFoldName(__RECYCLE_BIN);
+        recycleFolder.setFoldPath(recyclePath);
+        recycleFolder.setUserId(UserHolder.getUser().getUserId());
+        recycleFolder.setIsBucket(0);
+        folderMapper.save(recycleFolder);
 
         //将共享的bucket构建并存入数据库
         Folder finalFolder = folderMapper.getFoldByName(bucketName);
