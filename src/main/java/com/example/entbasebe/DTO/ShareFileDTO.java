@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 @Data
 public class ShareFileDTO {
 
+
+
     String fileName;
 
     LocalDateTime startTime;
@@ -16,4 +18,10 @@ public class ShareFileDTO {
     String filePath;
 
     String shareId;
+
+    Integer userId;
+
+    String userName;
+
+    String userEmail;
 }

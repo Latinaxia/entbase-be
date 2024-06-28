@@ -147,8 +147,9 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         newUser.setUserPassword(loginDTO.getPassword());
         //用户名随机生成
         newUser.setUserName(USER_NICK_NAME_PREFIX + RandomUtil.randomString(6));
-        //头像暂时默认
-        newUser.setIcon("默认头像");
+        //注册时默认头像为空
+//        String icon = "." + File.separator + "epoch.jpg";
+//        newUser.setIcon(icon);
         //注册用户不为管理员，isadmin设为0
         newUser.setIsAdmin("0");
         //先存入数据库中，为该用户生自动生成UserId
@@ -262,6 +263,9 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
     public ResponseEntity<byte[]> getAvatar(String userId) {
         //根据userId获取头像存储路径
         String icon = userMapper.queryIcon(userId);
+        if (icon == null || icon.isEmpty()){
+            return Result.fail("404","头像不存在!");
+        }
         //根据路径读取头像文件
         File file = new File(icon);
         log.info("头像路径：{}",icon);
@@ -278,7 +282,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
                 e.printStackTrace();
             }
         }
-        return Result.fail("400","头像不存在!");
+        return Result.fail("400","获取头像失败!");
     }
 
     @Override

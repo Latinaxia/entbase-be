@@ -131,6 +131,13 @@ public class IShareFileServiceImpl implements IShareFileService {
             LocalDateTime endTime = x.getEndTime();
             LocalDateTime startTime = endTime.minusHours(12);
             x.setStartTime(startTime);
+
+            //根据shareId获取userId，在user表中查询信息
+            Integer userId = userMapper.getUserIdByShareId(x.getShareId());
+            User user = userMapper.getUserById(userId);
+            x.setUserName(user.getUserName());
+            x.setUserEmail(user.getUserEmail());
+            x.setUserId(userId);
         });
     }
 
@@ -141,16 +148,24 @@ public class IShareFileServiceImpl implements IShareFileService {
      */
     @Override
     public Result deleteById(String shareId) {
-        // UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
-        //这里获取用户信息,只能有创建共享者删除
+        //这里获取用户信息,只能有创建共享者和管理员能删除
+        //判断是否为管理员
+        String isAdmin = UserHolder.getUser().getIsAdmin();
+        if(!isAdmin.equals("1")) {
+            //不是管理员,只能删除自己的共享
 
-        //获取用户id
-        Integer userId = UserHolder.getUser().getUserId();
+            //获取用户id
+            Integer userId = UserHolder.getUser().getUserId();
 
-        //删除共享
-        shareFileMapper.deleteById(shareId,userId);
+            //删除共享
+            shareFileMapper.deleteById(shareId, userId);
+        }
+        else{
+            //管理员可以删除任意用户的共享
+            shareFileMapper.deleteById(shareId);
+        }
 
-        return Result.ok();
+        return Result.ok("删除成功！");
     }
 
     /**

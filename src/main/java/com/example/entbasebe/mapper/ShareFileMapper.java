@@ -45,4 +45,7 @@ public interface ShareFileMapper {
 
     @Select("select share_id, file_path, end_time from share")
     ArrayList<ShareFileDTO> listAllShareFile();
+
+    @Delete("delete from share where share_id=#{shareId}")
+    void deleteById(String shareId);
 }

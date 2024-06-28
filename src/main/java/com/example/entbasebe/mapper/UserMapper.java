@@ -53,4 +53,8 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("select icon from user where user_id = #{userId}")
     String queryIcon(String userId);
+
+
+    @Select("select user_id from share where share_id = #{shareId}")
+    Integer getUserIdByShareId(String shareId);
 }
