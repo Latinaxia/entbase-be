@@ -148,8 +148,8 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         //用户名随机生成
         newUser.setUserName(USER_NICK_NAME_PREFIX + RandomUtil.randomString(6));
         //注册时默认头像为空
-//        String icon = "." + File.separator + "epoch.jpg";
-//        newUser.setIcon(icon);
+        String icon = "." + File.separator + "epoch.jpg";
+        newUser.setIcon(icon);
         //注册用户不为管理员，isadmin设为0
         newUser.setIsAdmin("0");
         //先存入数据库中，为该用户生自动生成UserId
