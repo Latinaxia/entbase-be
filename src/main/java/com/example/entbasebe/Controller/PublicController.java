@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
 
 @RestController
 @Slf4j
@@ -70,6 +69,19 @@ public class PublicController {
     public Result sendmail(@RequestBody LoginDTO loginDTO) {
         log.info("loginDTO: {}", loginDTO);
         return userService.sendmail(loginDTO);
+    }
+
+
+    /**
+     * 根据email获取code
+     *
+     * @param email
+     * @return
+     */
+    @PostMapping("/code")
+    public Result getCodeByEmail(@RequestParam("email") String email) {
+        log.info("email: {}", email);
+        return userService.getCodeByEmail(email);
     }
 
 }

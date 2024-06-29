@@ -21,7 +21,6 @@ public class UserController {
     @Resource
     private IUserService userService;
 
-
     /**
      * 列出用户的所有存储桶
      * @return
@@ -54,6 +53,21 @@ public class UserController {
     @PostMapping("/avatar/upload")
     public Result uploadAvatar(@RequestParam("newIcon") MultipartFile newIcon) {
         return userService.uploadAvatar(newIcon);
+    }
+
+
+    /**
+     * 忘记密码
+     * @param email
+     * @param code
+     * @param newPassword
+     * @return
+     */
+    @PostMapping("/reset")
+    public Result verifyCodeAndResetPassword(@RequestParam("email") String email,
+                                             @RequestParam("code") String code,
+                                             @RequestParam("newPassword") String newPassword) {
+        return userService.verifyCodeAndResetPassword(email, code, newPassword);
     }
 
 }
