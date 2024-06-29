@@ -62,13 +62,7 @@ public class IShareFileServiceImpl implements IShareFileService {
     @Override
     public ResponseEntity<byte[]> getShareFile(String shareId, String pwd) {
 
-        //先判断链接有没有过期
-        LocalDateTime endTime = shareFileMapper.getEndTime(shareId);
-        if(endTime.isBefore(LocalDateTime.now())){
-            return Result.fail("400","分享链接已过期！");
-        }
-
-        //再判断密码是否正确
+        //判断密码是否正确
         String filePath = shareFileMapper.getFilePath(shareId,pwd);
         log.info("获取的共享文件路径是：{},该共享文件的密码是：{}", filePath, pwd);
         if (filePath == null) {
@@ -181,6 +175,12 @@ public class IShareFileServiceImpl implements IShareFileService {
         ShareDTO shareFile = shareFileMapper.getShareFileById(shareId);
         if (shareFile == null) {
             return Result.fail("共享文件不存在");
+        }
+
+        //先判断链接有没有过期
+        LocalDateTime endTime = shareFileMapper.getEndTime(shareId);
+        if(endTime.isBefore(LocalDateTime.now())){
+            return Result.fail("分享链接已过期！");
         }
 
         // 获取创建人信息
