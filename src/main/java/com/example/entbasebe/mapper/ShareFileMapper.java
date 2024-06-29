@@ -33,7 +33,11 @@ public interface ShareFileMapper {
      * @param userId
      */
     @Delete("delete from share where share_id=#{shareId} and user_id=#{userId}")
-    void deleteById(String shareId, Integer userId);
+    void deleteByTwoId(String shareId, Integer userId);
+
+    @Delete("delete from share where share_id=#{shareId}")
+    void deleteById(String shareId);
+
 
     /**
      * 获取共享目录/路径
@@ -46,6 +50,5 @@ public interface ShareFileMapper {
     @Select("select share_id, file_path, end_time from share")
     ArrayList<ShareFileDTO> listAllShareFile();
 
-    @Delete("delete from share where share_id=#{shareId}")
-    void deleteById(String shareId);
+
 }

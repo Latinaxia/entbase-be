@@ -158,7 +158,7 @@ public class IShareFileServiceImpl implements IShareFileService {
             Integer userId = UserHolder.getUser().getUserId();
 
             //删除共享
-            shareFileMapper.deleteById(shareId, userId);
+            shareFileMapper.deleteByTwoId(shareId, userId);
         }
         else{
             //管理员可以删除任意用户的共享
