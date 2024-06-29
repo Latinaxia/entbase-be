@@ -21,12 +21,12 @@ public class InterceptorConfig implements WebMvcConfigurer {
         //登录拦截器，拦截需要登录才能查看到的内容
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login").order(0)
+                .excludePathPatterns("/login")
                 .excludePathPatterns("/register")
                 .excludePathPatterns("/get-captcha")
                 .excludePathPatterns("/get-email-code")
-                .excludePathPatterns("/share/get/{shareId}/pwd={password}")
-                .excludePathPatterns("/share/get/*")
+//                .excludePathPatterns("/share/get/{shareId}/pwd={password}")
+                .excludePathPatterns("/share/get/**").order(0)
                 .excludePathPatterns("/user/avatar/get/userId={userId}")
                 .excludePathPatterns("/code")
                 .excludePathPatterns("/reset");
