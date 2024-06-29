@@ -21,7 +21,7 @@ public interface AdminMapper {
     void deleteUserById(Integer userId);
 
     @Select("select fold_path from folder as f join bucket on  bucket.user_id = f.user_id where f.user_id = #{userId}")
-    String getBucketPathByUserId(Integer userId);
+    List<String> getBucketPathByUserId(Integer userId);
 
     @Delete("delete from bucket where user_id = #{userId}")
     void deleteBucketByUserId(Integer userId);

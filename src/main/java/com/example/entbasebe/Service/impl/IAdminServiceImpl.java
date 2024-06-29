@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 import static com.example.entbasebe.Utils.SystemConstants.__RECYCLE_BIN;
@@ -39,17 +40,19 @@ public class IAdminServiceImpl implements IAdminService {
 
         //1.在存储层面删除文件和文件夹
         //根据传入的userId，获取该用户bucket的文件夹路径
-        String bucketPath = adminMapper.getBucketPathByUserId(userId);
-        File bucketFolder = new File(bucketPath);
-        log.info("待删除的bucket文件夹路径：{}", bucketPath);
+        List<String> bucketPaths = adminMapper.getBucketPathByUserId(userId);
+        log.info("bucketPaths: " + bucketPaths);
+        for (String bucketPath : bucketPaths) {
+            File bucketFolder = new File(bucketPath);
+            log.info("待删除的bucket文件夹路径：{}", bucketPath);
 
-        //递归删除bucket文件夹中的所有文件/文件夹
-        try {
-            deleteAllFileAndFolder(bucketFolder);
-        } catch  (IOException e) {
-            throw new RuntimeException("删除bucket文件夹失败！");
+            //递归删除bucket文件夹中的所有文件/文件夹
+            try {
+                deleteAllFileAndFolder(bucketFolder);
+            } catch  (IOException e) {
+                throw new RuntimeException("删除bucket文件夹失败！");
+            }
         }
-
 
         //2.删除数据库中的文件信息，再删文件夹
         adminMapper.deleteFileByUserId(userId);
@@ -169,12 +172,14 @@ public class IAdminServiceImpl implements IAdminService {
                 deleteAllFileAndFolder(subFile);
             }
         }
-        // 如果是文件，则直接尝试删除，并检查返回值
-        if (!file.delete()) {
+        // 如果是文件或文件夹，尝试删除它，如果它不存在，不会抛出异常
+        try {
+            Files.deleteIfExists(file.toPath());
+        } catch (IOException e) {
             // 使用日志记录器
-//            log.error("Failed to delete file: {}", file.getAbsolutePath());
+            // log.error("Failed to delete file: {}", file.getAbsolutePath());
             // 文件删除失败时可以抛出异常或记录错误信息
-            throw new IOException("Failed to delete file: " + file.getAbsolutePath());
+            throw new IOException("Failed to delete file: " + file.getAbsolutePath(), e);
         }
     }
 
