@@ -400,13 +400,18 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
      */
     @Override
     public Result verifyCodeAndResetPassword(String email, String code, String newPassword) {
+
+        //获取用户信息
+        Integer userId = userMapper.getUserIdByEmail(email);
+        if (userId==null){
+            return Result.fail("当前用户不存在");
+        }
         //从redis中获取验证码，与用户输入的验证码进行比对
         String redisCode = stringRedisTemplate.opsForValue().get(email);
         if(redisCode == null || !redisCode.equals(code)){
             return Result.fail("验证码错误!");
         }
-        //获取用户信息
-        Integer userId = userMapper.getUserIdByEmail(email);
+
 
         //注册
         userMapper.modifyPassword(newPassword,userId);
