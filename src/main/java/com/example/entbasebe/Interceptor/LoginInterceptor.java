@@ -42,8 +42,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
 
         //2.判断请求url中是否包含login，如果包含，说明是登录操作，放行
-        if(url.contains("/login") && url.contains("/get")){
-            log.info("登录操作, 放行...");
+        if(url.contains("/login") && url.contains("get")){
+            log.info("登录/分享文件操作, 放行...");
             return true;
         }
 
