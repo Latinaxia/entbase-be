@@ -228,13 +228,13 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
 
 //        UserHolder.saveUser(new UserHolderDTO(11,"entbaser_g8b0fc","默认头像","3276327856@qq.com","0"));
         //获取当前用户的id
-        Integer userId = UserHolder.getUser().getUserId();
+//        Integer userId = UserHolder.getUser().getUserId();
 
         //判断是否是管理员
         String isAdmin = UserHolder.getUser().getIsAdmin();
         List<BucketsDTO> buckets = new ArrayList<>();
         if(isAdmin.equals("0")){
-            buckets = userMapper.listBuckets(userId);
+            buckets = userMapper.listBuckets();
         }
         else{
             buckets = userMapper.listAllBuckets();
