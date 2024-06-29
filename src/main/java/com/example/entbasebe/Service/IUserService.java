@@ -16,8 +16,7 @@ public interface IUserService {
     String saveCodeId(String code);
 
     Result sendmail(LoginDTO loginDTO);
-
-
+    
     Result listBuckets();
 
     Result modifyName(String newName);
@@ -27,4 +26,8 @@ public interface IUserService {
     ResponseEntity<byte[]> getAvatar(String userId);
 
     Result uploadAvatar(MultipartFile icon);
+
+    Result verifyCodeAndResetPassword(String email, String code, String newPassword);
+
+    Result getCodeByEmail(String email);
 }

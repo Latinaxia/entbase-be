@@ -360,6 +360,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         return Result.ok("验证码已发送至邮箱！请注意查收");
     }
 
+
     private void SendMailCode(String email, String code) {
         SimpleMailMessage message = new SimpleMailMessage();
 
@@ -374,5 +375,48 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
 
         mailSender.send(message);
     }
+
+
+    @Override
+    public Result getCodeByEmail(String email) {
+        //验证码正确，发送邮箱验证码
+        //生成邮箱验证码
+        String code = RandomUtil.randomNumbers(6);
+        //存入redis中，用于校验验证码,有效期10分钟
+        stringRedisTemplate.opsForValue().set(email,code,10*60, TimeUnit.SECONDS);
+        stringRedisTemplate.expire(email, 10, TimeUnit.MINUTES);
+        //发送邮件
+        SendMailCode(email,code);
+        //返回结果
+        return Result.ok("验证码已发送至邮箱！请注意查收");
+    }
+
+    /**
+     * 忘记密码
+     * @param email
+     * @param code
+     * @param newPassword
+     * @return
+     */
+    @Override
+    public Result verifyCodeAndResetPassword(String email, String code, String newPassword) {
+
+        //获取用户信息
+        Integer userId = userMapper.getUserIdByEmail(email);
+        if (userId==null){
+            return Result.fail("当前用户不存在");
+        }
+        //从redis中获取验证码，与用户输入的验证码进行比对
+        String redisCode = stringRedisTemplate.opsForValue().get(email);
+        if(redisCode == null || !redisCode.equals(code)){
+            return Result.fail("验证码错误!");
+        }
+
+
+        //注册
+        userMapper.modifyPassword(newPassword,userId);
+        return Result.ok("修改成功");
+    }
+
 
 }
