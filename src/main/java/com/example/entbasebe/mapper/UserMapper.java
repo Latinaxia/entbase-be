@@ -24,7 +24,7 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select distinct b.bucket_id,b.bucket_space, b.is_public, f.fold_name, f.fold_path " +
             "from bucket b join entbase.folder f on b.bucket_id = f.fold_id " +
             "where b.is_public = '1'")
-    List<BucketsDTO> listBuckets(Integer userId);
+    List<BucketsDTO> listBuckets();
 
     /**
      * 列出所有的桶
