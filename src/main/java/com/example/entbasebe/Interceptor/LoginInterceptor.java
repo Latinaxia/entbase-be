@@ -42,7 +42,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
 
         //2.判断请求url中是否包含login，如果包含，说明是登录操作，放行
-        if(url.contains("/login")){
+        if(url.contains("/login") && url.contains("/get")){
             log.info("登录操作, 放行...");
             return true;
         }
@@ -79,7 +79,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest 请求, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }
 }
