@@ -267,7 +267,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
     public ResponseEntity<byte[]> getAvatar(String userId) {
         //根据userId获取头像存储路径
         String icon = userMapper.queryIcon(userId);
-        if (icon == null || icon.isEmpty()){
+        if (icon.equals("icon")){
             return Result.fail("404","头像不存在!");
         }
         //根据路径读取头像文件
@@ -297,18 +297,24 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
             return Result.fail("上传失败，请选择文件");
         }
 
-        String directoryPath = "." + File.separator + "data" + File.separator + __AVATAR;
+        String directoryPath = "." + File.separator + "data" + File.separator + "__AVATAR";
         File directory = new File(directoryPath);
 
+// 检查目录是否存在，如果不存在则创建
         if (!directory.exists()) {
-            boolean created = directory.mkdirs();
-            if (created) {
-                System.out.println("Directory created successfully.");
+            boolean result = directory.mkdirs();
+            if (result) {
+                System.out.println("目录已成功创建: " + directoryPath);
+            } else {
+                System.out.println("无法创建目录: " + directoryPath);
             }
+        } else {
+            System.out.println("目录已存在: " + directoryPath);
         }
 
+
         Integer userId = UserHolder.getUser().getUserId();
-        String fileName = UUID.randomUUID() + "_" + newIcon.getOriginalFilename();
+        String fileName = UUID.randomUUID().toString().replace("-", "").substring(0, 8)+ "_" + newIcon.getOriginalFilename();
         String icon = "." + File.separator + "data" + File.separator + __AVATAR + File.separator + fileName;
         Path path = Paths.get(icon);
         try {
