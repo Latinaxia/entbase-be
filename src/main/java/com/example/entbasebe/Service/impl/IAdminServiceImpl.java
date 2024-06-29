@@ -38,6 +38,10 @@ public class IAdminServiceImpl implements IAdminService {
     @Transactional
     public Result deleteUserById(Integer userId) {
 
+        if(bucketMapper.getBucketIdByUserId(userId) == null){
+            return Result.fail("该用户不存在");
+        }
+
         //1.在存储层面删除文件和文件夹
         //根据传入的userId，获取该用户bucket的文件夹路径
         List<String> bucketPaths = adminMapper.getBucketPathByUserId(userId);
