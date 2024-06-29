@@ -28,6 +28,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/share/get/{shareId}")
                 .excludePathPatterns("/user/avatar/get/userId={userId}")
                 .excludePathPatterns("/code")
-                .excludePathPatterns("/user/reset");
+                .excludePathPatterns("/reset");
     }
 }

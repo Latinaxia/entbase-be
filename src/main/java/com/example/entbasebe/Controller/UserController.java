@@ -56,18 +56,4 @@ public class UserController {
     }
 
 
-    /**
-     * 忘记密码
-     * @param email
-     * @param code
-     * @param newPassword
-     * @return
-     */
-    @PostMapping("/reset")
-    public Result verifyCodeAndResetPassword(@RequestParam("email") String email,
-                                             @RequestParam("code") String code,
-                                             @RequestParam("newPassword") String newPassword) {
-        return userService.verifyCodeAndResetPassword(email, code, newPassword);
-    }
-
 }
